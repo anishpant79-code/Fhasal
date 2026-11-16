@@ -1,4 +1,4 @@
-import { calculateCropSuitability, getCurrentGrowingSeason } from '../utils/cropSuitability'
+import { calculateCropSuitability, getCurrentGrowingSeason } from '../utils/cropSuitability.js'
 
 export const REFERENCE_CROPS = [
     {

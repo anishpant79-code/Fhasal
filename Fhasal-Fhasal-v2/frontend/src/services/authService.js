@@ -32,7 +32,7 @@ export const authService = {
     },
 
     async resetPassword(token, password) {
-        const response = await API.put(`/auth/reset-password/${token}`, { password })
+        const response = await API.post('/auth/reset-password', { token, password })
         return response.data
     },
 }
