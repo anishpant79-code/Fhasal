@@ -16,7 +16,7 @@ const LanguageSelector = ({ className = '', showLabel = false }) => {
         supportedLanguages[0] ||
         { code: 'en', name: 'English', nativeName: 'English' }
 
-    // Close when clicking outside
+    // Close dropdown on outside click
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -60,11 +60,13 @@ const LanguageSelector = ({ className = '', showLabel = false }) => {
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-52 rounded-2xl bg-white shadow-2xl border border-[#E0E7DC] py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="absolute right-0 mt-2 w-56 rounded-2xl bg-white shadow-2xl border border-[#E0E7DC] py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
                     <div className="px-3.5 py-1.5 border-b border-[#F0F4EE] text-[11px] font-bold uppercase tracking-wider text-[#7A8475]">
                         {t('selectLanguage')}
                     </div>
-                    <div className="max-h-64 overflow-y-auto py-1">
+
+                    {/* Sized so all 7 languages fit completely without cutoff, with smooth dropdown scrolling if screen height is constrained */}
+                    <div className="max-h-[min(520px,85vh)] overflow-y-auto dropdown-scroll py-1 overscroll-contain">
                         {supportedLanguages.map((lang) => {
                             const isSelected = lang.code === languageCode
                             return (
@@ -79,7 +81,7 @@ const LanguageSelector = ({ className = '', showLabel = false }) => {
                                     }`}
                                 >
                                     <div>
-                                        <p className="leading-tight font-medium">{lang.nativeName}</p>
+                                        <p className="leading-tight font-medium text-sm">{lang.nativeName}</p>
                                         <p className="text-[11px] text-[#7A8475]">{lang.name}</p>
                                     </div>
                                     {isSelected && <Check size={16} className="text-[#347052] shrink-0" />}

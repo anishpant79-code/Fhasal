@@ -237,7 +237,7 @@ const Navbar = ({ onToggleSidebar, isSidebarCollapsed }) => {
 
                     {/* Popover Card */}
                     {profileMenuOpen && (
-                        <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white shadow-2xl border border-[#E0E7DC] py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                        <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white shadow-2xl border border-[#E0E7DC] py-2 z-50 animate-in fade-in zoom-in-95 duration-150 max-h-[min(540px,85vh)] overflow-y-auto dropdown-scroll overscroll-contain">
                             <div className="px-4 py-3 border-b border-[#F0F4EE]">
                                 <p className="text-sm font-bold text-[#174B35] truncate">
                                     {user?.name || 'Farmer'}
