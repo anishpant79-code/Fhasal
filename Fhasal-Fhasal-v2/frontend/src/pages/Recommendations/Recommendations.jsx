@@ -181,12 +181,13 @@ const Recommendations = () => {
                     </div>
 
                     {fields.length > 0 && (
-                        <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-[#E5EAE1] shadow-sm">
-                            <span className="text-xs font-medium text-[#7A8475]">Field:</span>
+                        <div className="flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-xl border border-[#DCE5DA] shadow-xs hover:border-[#347052] transition-colors">
+                            <MapPin size={16} className="text-[#347052] shrink-0" />
+                            <span className="text-xs font-semibold text-[#7A8475]">Field:</span>
                             <select
                                 value={selectedFieldId}
                                 onChange={(e) => setSelectedFieldId(e.target.value)}
-                                className="bg-transparent text-sm font-semibold text-[#174B35] outline-none cursor-pointer"
+                                className="bg-transparent text-sm font-bold text-[#174B35] outline-none cursor-pointer border-none py-1"
                             >
                                 {fields.map((f) => {
                                     const id = f.id || f._id

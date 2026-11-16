@@ -58,3 +58,27 @@ p {
   height: 0;
   background: transparent;
 }
+
+/* Modern, consistent custom dropdown styling for all select elements across the app */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23347052' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1.1em 1.1em;
+  padding-right: 2.25rem !important;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+select:hover {
+  border-color: #347052;
+}
+
+select:focus {
+  border-color: #347052;
+  box-shadow: 0 0 0 3px rgba(52, 112, 82, 0.15);
+  outline: none;
+}

@@ -19,6 +19,7 @@ import {
 import { useSettings } from '../../context/SettingsContext'
 import { useAuth } from '../../context/AuthContext'
 import FhasalMark from '../../assets/logos/fhasal-mark.svg'
+import LanguageSelector from '../../components/common/LanguageSelector'
 
 const signupTranslations = {
     en: {
@@ -555,28 +556,7 @@ const Signup = () => {
 
                     {/* Language Selector */}
                     <div className="flex justify-end mb-7">
-                        <div className="relative">
-                            <Globe
-                                size={17}
-                                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#347052] pointer-events-none"
-                            />
-
-                            <select
-                                value={languageCode}
-                                onChange={(e) => updateLanguage(e.target.value)}
-                                aria-label={t('selectLanguage')}
-                                className="pl-9 pr-3 py-2 rounded-lg border border-gray-200 bg-white text-sm text-gray-700 outline-none focus:border-[#347052]"
-                            >
-                                {supportedLanguages.map((languageOption) => (
-                                    <option
-                                        key={languageOption.code}
-                                        value={languageOption.code}
-                                    >
-                                        {languageOption.nativeName}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                        <LanguageSelector />
                     </div>
 
                     <div className="mb-7">
