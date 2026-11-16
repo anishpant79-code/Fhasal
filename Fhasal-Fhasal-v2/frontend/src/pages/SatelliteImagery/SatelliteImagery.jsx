@@ -170,11 +170,11 @@ const SatelliteImagery = () => {
         }
 
         const selectedStillExists = fields.some(
-            (field) => String(field.id) === selectedFieldId
+            (field) => String(field.id || field._id) === selectedFieldId
         )
 
         if (!selectedStillExists) {
-            setSelectedFieldId(String(fields[0].id))
+            setSelectedFieldId(String(fields[0].id || fields[0]._id))
         }
     }, [fields, selectedFieldId])
 
@@ -182,7 +182,7 @@ const SatelliteImagery = () => {
     const selectedField = useMemo(
         () =>
             fields.find(
-                (field) => String(field.id) === selectedFieldId
+                (field) => String(field.id || field._id) === selectedFieldId
             ),
         [fields, selectedFieldId]
     )
@@ -226,7 +226,7 @@ const SatelliteImagery = () => {
         setTileError(false)
 
         if (fields.length > 0) {
-            setSelectedFieldId(String(fields[0].id))
+            setSelectedFieldId(String(fields[0].id || fields[0]._id))
         }
     }
 
@@ -325,14 +325,17 @@ const SatelliteImagery = () => {
                                 className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-100"
                             >
                                 {filteredFields.length > 0 ? (
-                                    filteredFields.map((field) => (
-                                        <option
-                                            key={field.id}
-                                            value={String(field.id)}
-                                        >
-                                            {field.fieldName || 'Unnamed Field'}
-                                        </option>
-                                    ))
+                                    filteredFields.map((field) => {
+                                        const fId = String(field.id || field._id)
+                                        return (
+                                            <option
+                                                key={fId}
+                                                value={fId}
+                                            >
+                                                {field.fieldName || 'Unnamed Field'}
+                                            </option>
+                                        )
+                                    })
                                 ) : (
                                     <option value="">
                                         No matching fields found

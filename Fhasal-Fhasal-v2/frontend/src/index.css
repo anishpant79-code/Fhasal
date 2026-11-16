@@ -47,32 +47,26 @@ p {
   line-height: 1.6;
 }
 
-/* Modern sleek scrollbar for main window (replaces bulky 17px default Windows bar) */
+/* Completely remove and hide bulky default scrollbars on main window & root while preserving smooth scrolling */
 html,
-body {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(52, 112, 82, 0.25) transparent;
+body,
+#root {
+  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none !important; /* Firefox */
 }
 
 html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  width: 6px;
+body::-webkit-scrollbar,
+#root::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
 }
 
-html::-webkit-scrollbar-track,
-body::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-html::-webkit-scrollbar-thumb,
-body::-webkit-scrollbar-thumb {
-  background: rgba(52, 112, 82, 0.25);
-  border-radius: 9999px;
-}
-
-html::-webkit-scrollbar-thumb:hover,
-body::-webkit-scrollbar-thumb:hover {
-  background: rgba(52, 112, 82, 0.5);
+::-webkit-scrollbar-corner {
+  display: none !important;
+  background: transparent !important;
 }
 
 /* Sidebar scrollbar: completely hidden */

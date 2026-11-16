@@ -254,7 +254,7 @@ const Navbar = ({ onToggleSidebar, isSidebarCollapsed }) => {
                                 <Link
                                     to="/profile"
                                     onClick={() => setProfileMenuOpen(false)}
-                                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#344334] hover:bg-[#F7F9F5] hover:text-[#174B35] transition-colors"
+                                    className="w-[calc(100%-8px)] mx-1 rounded-xl flex items-center gap-3 px-3.5 py-2 text-sm text-[#344334] hover:bg-[#F2F6F0] hover:text-[#174B35] transition-colors"
                                 >
                                     <User size={16} className="text-[#347052]" />
                                     <span>{navText.myProfile}</span>
@@ -263,7 +263,7 @@ const Navbar = ({ onToggleSidebar, isSidebarCollapsed }) => {
                                 <Link
                                     to="/fields"
                                     onClick={() => setProfileMenuOpen(false)}
-                                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#344334] hover:bg-[#F7F9F5] hover:text-[#174B35] transition-colors"
+                                    className="w-[calc(100%-8px)] mx-1 rounded-xl flex items-center gap-3 px-3.5 py-2 text-sm text-[#344334] hover:bg-[#F2F6F0] hover:text-[#174B35] transition-colors"
                                 >
                                     <Map size={16} className="text-[#347052]" />
                                     <span>{navText.myFields}</span>
@@ -272,7 +272,7 @@ const Navbar = ({ onToggleSidebar, isSidebarCollapsed }) => {
                                 <Link
                                     to="/settings"
                                     onClick={() => setProfileMenuOpen(false)}
-                                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#344334] hover:bg-[#F7F9F5] hover:text-[#174B35] transition-colors"
+                                    className="w-[calc(100%-8px)] mx-1 rounded-xl flex items-center gap-3 px-3.5 py-2 text-sm text-[#344334] hover:bg-[#F2F6F0] hover:text-[#174B35] transition-colors"
                                 >
                                     <SettingsIcon size={16} className="text-[#347052]" />
                                     <span>{navText.accountSettings}</span>
@@ -281,7 +281,7 @@ const Navbar = ({ onToggleSidebar, isSidebarCollapsed }) => {
                                 <Link
                                     to="/notifications"
                                     onClick={() => setProfileMenuOpen(false)}
-                                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#344334] hover:bg-[#F7F9F5] hover:text-[#174B35] transition-colors"
+                                    className="w-[calc(100%-8px)] mx-1 rounded-xl flex items-center gap-3 px-3.5 py-2 text-sm text-[#344334] hover:bg-[#F2F6F0] hover:text-[#174B35] transition-colors"
                                 >
                                     <Bell size={16} className="text-[#347052]" />
                                     <span>{navText.notifications}</span>

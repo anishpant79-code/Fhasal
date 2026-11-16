@@ -1,0 +1,10 @@
+{
+  "buildCommand": "npm --prefix Fhasal-Fhasal-v2/frontend run build",
+  "outputDirectory": "Fhasal-Fhasal-v2/frontend/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

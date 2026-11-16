@@ -246,18 +246,18 @@ const DigitalTwin = () => {
         }
 
         const fieldExists = fields.some(
-            (field) => String(field.id) === selectedFieldId
+            (field) => String(field.id || field._id) === selectedFieldId
         )
 
         if (!fieldExists) {
-            setSelectedFieldId(String(fields[0].id))
+            setSelectedFieldId(String(fields[0].id || fields[0]._id))
         }
     }, [fields, selectedFieldId])
 
     const selectedField = useMemo(
         () =>
             fields.find(
-                (field) => String(field.id) === selectedFieldId
+                (field) => String(field.id || field._id) === selectedFieldId
             ) || null,
         [fields, selectedFieldId]
     )
@@ -490,19 +490,22 @@ const DigitalTwin = () => {
                             onChange={(e) => setSelectedFieldId(e.target.value)}
                             className="w-full max-w-xl rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-100"
                         >
-                            {fields.map((field) => (
-                                <option
-                                    key={field.id}
-                                    value={String(field.id)}
-                                >
-                                    {field.fieldName || field.name || 'Unnamed Field'}
-                                </option>
-                            ))}
+                            {fields.map((field) => {
+                                const fId = String(field.id || field._id)
+                                return (
+                                    <option
+                                        key={fId}
+                                        value={fId}
+                                    >
+                                        {field.fieldName || field.name || 'Unnamed Field'}
+                                    </option>
+                                )
+                            })}
                         </select>
 
                         {selectedField && (
                             <Link
-                                to={`/fields/${selectedField.id}/edit`}
+                                to={`/fields/${selectedField.id || selectedField._id}/edit`}
                                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-fhasal-green px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-800"
                             >
                                 <Pencil size={16} />

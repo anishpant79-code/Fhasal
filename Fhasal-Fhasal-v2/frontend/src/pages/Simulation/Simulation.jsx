@@ -180,7 +180,7 @@ const Simulation = () => {
     const selectedField = useMemo(
         () =>
             fields?.find(
-                (field) => String(field.id) === String(selectedFieldId)
+                (field) => String(field.id || field._id) === String(selectedFieldId)
             ) || null,
         [fields, selectedFieldId]
     )
@@ -195,11 +195,11 @@ const Simulation = () => {
         }
 
         const exists = fields.some(
-            (field) => String(field.id) === String(selectedFieldId)
+            (field) => String(field.id || field._id) === String(selectedFieldId)
         )
 
         if (!exists) {
-            setSelectedFieldId(String(fields[0].id))
+            setSelectedFieldId(String(fields[0].id || fields[0]._id))
         }
     }, [fields, selectedFieldId])
 
@@ -553,11 +553,14 @@ const Simulation = () => {
                             onChange={(e) => setSelectedFieldId(e.target.value)}
                             className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none focus:border-[#347052] sm:max-w-xs"
                         >
-                            {fields.map((field) => (
-                                <option key={field.id} value={String(field.id)}>
-                                    {field.fieldName || 'Registered Field'}
-                                </option>
-                            ))}
+                            {fields.map((field) => {
+                                const fId = String(field.id || field._id)
+                                return (
+                                    <option key={fId} value={fId}>
+                                        {field.fieldName || 'Registered Field'}
+                                    </option>
+                                )
+                            })}
                         </select>
                     )}
                 </div>

@@ -61,12 +61,6 @@ const ForgotPassword = () => {
 
             setMessage(response.data?.message || t.success)
             setResetLink(response.data?.resetLink || '')
-
-            if (!response.data?.resetLink) {
-                setError(
-                    'No reset link was returned. Check your registered email and backend configuration.'
-                )
-            }
         } catch (err) {
             console.error('Forgot password error:', err)
 

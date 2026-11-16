@@ -74,10 +74,10 @@ const LanguageSelector = ({ className = '', showLabel = false }) => {
                                     key={lang.code}
                                     type="button"
                                     onClick={() => handleSelect(lang.code)}
-                                    className={`w-full flex items-center justify-between px-3.5 py-2 text-sm text-left transition-colors cursor-pointer ${
+                                    className={`w-[calc(100%-8px)] mx-1 rounded-xl flex items-center justify-between px-3 py-1.5 text-sm text-left transition-colors cursor-pointer ${
                                         isSelected
                                             ? 'bg-[#E8F4EA] text-[#174B35] font-semibold'
-                                            : 'text-[#344334] hover:bg-[#F7F9F5]'
+                                            : 'text-[#344334] hover:bg-[#F2F6F0]'
                                     }`}
                                 >
                                     <div>

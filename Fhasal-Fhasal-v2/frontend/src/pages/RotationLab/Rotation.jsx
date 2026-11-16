@@ -1,5 +1,5 @@
 
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import {
     RefreshCw,
     Sprout,
@@ -57,14 +57,21 @@ const Rotation = () => {
     const { fields } = useFields()
 
     const [selectedField, setSelectedField] = useState(
-        fields.length > 0 ? String(fields[0].id) : ''
+        fields.length > 0 ? String(fields[0].id || fields[0]._id) : ''
     )
 
     const [selectedPlan, setSelectedPlan] = useState(null)
 
+    // Sync selectedField whenever fields load asynchronously
+    useEffect(() => {
+        if (fields.length > 0 && !selectedField) {
+            setSelectedField(String(fields[0].id || fields[0]._id))
+        }
+    }, [fields, selectedField])
+
     const currentField = useMemo(
         () => fields.find(
-            (field) => String(field.id) === selectedField
+            (field) => String(field.id || field._id) === selectedField
         ),
         [fields, selectedField]
     )
@@ -129,14 +136,17 @@ const Rotation = () => {
                             }}
                             className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-600"
                         >
-                            {fields.map((field) => (
-                                <option
-                                    key={field.id}
-                                    value={String(field.id)}
-                                >
-                                    {field.fieldName || 'Unnamed Field'}
-                                </option>
-                            ))}
+                            {fields.map((field) => {
+                                const fId = String(field.id || field._id)
+                                return (
+                                    <option
+                                        key={fId}
+                                        value={fId}
+                                    >
+                                        {field.fieldName || 'Unnamed Field'}
+                                    </option>
+                                )
+                            })}
                         </select>
 
                         {currentField && (
