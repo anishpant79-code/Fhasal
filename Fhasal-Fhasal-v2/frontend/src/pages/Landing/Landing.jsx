@@ -38,6 +38,8 @@ const NavLinks = ({ links, onNavigate }) => (
     </>
 )
 
+const SVG_FALLBACK = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"><rect width="100%" height="100%" fill="%23e8f5e9"/><g fill="%232e7d32" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif"><circle cx="400" cy="260" r="48" fill="%23c8e6c9"/><text x="400" y="270" font-size="32">🌱</text><text x="400" y="340" font-size="24" font-weight="bold">Fhasal Smart Agriculture</text><text x="400" y="375" font-size="14" fill="%234caf50">Sustainable Precision Farming</text></g></svg>'
+
 const photos = {
     hero: 'https://images.pexels.com/photos/31096711/pexels-photo-31096711/free-photo-of-rural-indian-farmer-in-lush-green-field-at-sunrise.jpeg?auto=compress&dpr=1&h=750&w=1260',
     field: 'https://vulplex.com/images/featured/Indian-Female-Farmer-in-Sari-Tending-Green-Crops-in-Rural-Field-Wallpaper-69bfd33918af5.jpg',
@@ -111,8 +113,11 @@ const Landing = () => {
         },
     ]
 
-    const handleImageError = (event, fallback = photos.hero) => {
-        event.currentTarget.onerror = null
+    const handleImageError = (event, fallback = SVG_FALLBACK) => {
+        event.currentTarget.onerror = (e) => {
+            e.currentTarget.onerror = null
+            e.currentTarget.src = SVG_FALLBACK
+        }
         event.currentTarget.src = fallback
     }
 

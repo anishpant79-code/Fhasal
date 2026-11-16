@@ -38,6 +38,27 @@ app.get('/api/health', (req, res) => {
     })
 })
 
+// 404 Not Found Handler
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: `Endpoint not found: ${req.method} ${req.originalUrl}`,
+    })
+})
+
+// Centralized Global Error Handler
+app.use((err, req, res, _next) => {
+    console.error('Unhandled server error:', err.stack || err.message)
+    const statusCode = err.status || err.statusCode || 500
+    res.status(statusCode).json({
+        success: false,
+        message:
+            process.env.NODE_ENV === 'production'
+                ? 'Internal server error. Please try again later.'
+                : err.message || 'Internal server error',
+    })
+})
+
 // Start Server
 const startServer = async () => {
     try {

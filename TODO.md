@@ -168,3 +168,7 @@ This document tracks the prioritized, step-by-step engineering roadmap to fix, c
 - [x] **Frontend Production Build:** `npm run build` completed with code 0 (`vite v8.3.8`).
 - [x] **Frontend ESLint Check:** `npm run lint` completed with **0 errors**.
 - [x] **Backend Syntax & Runtime Check:** `node -c` verified for all controllers, routes, and models with code 0.
+- [x] **Automated Frontend Test Suite (`npm test`):** 18 test cases across 3 suites passing (calculations, 7-language translations, crop suitability).
+- [x] **Automated Backend Test Suite (`npm test`):** 4 test cases passing (JWT auth cycle, tampered token rejection, bcrypt hashing, areaUnit enum).
+- [x] **Backend Production Hardening:** Implemented 404 handler and centralized global error handler in `backend/server.js`.
+- [x] **Landing Page Offline Asset Fallback:** Added resilient inline SVG data-URI fallback for agricultural media assets.
