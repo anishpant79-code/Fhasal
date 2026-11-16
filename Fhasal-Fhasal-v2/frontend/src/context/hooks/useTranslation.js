@@ -1,31 +1,31 @@
-
-import { useSettings } from '../context/SettingsContext'
-import translations from '../utils/translations'
+import { useSettings } from '../SettingsContext'
+import { getTranslation, getTranslations } from '../../utils/translations'
 
 const useTranslation = () => {
-    const { settings, updateSettings } = useSettings()
+    const { settings, updateLanguage, supportedLanguages } = useSettings()
 
-    const language = settings.language || 'English'
+    const languageCode = settings?.languageCode || 'en'
+    const languageName = settings?.language || 'English'
 
     const t = (key) => {
-        return (
-            translations[language]?.[key] ??
-            translations.English?.[key] ??
-            key
-        )
+        return getTranslation(languageCode, key)
     }
 
-    const changeLanguage = (newLanguage) => {
-        if (translations[newLanguage]) {
-            updateSettings('language', newLanguage)
-        }
+    const changeLanguage = (newCodeOrName) => {
+        updateLanguage(newCodeOrName)
     }
+
+    const allTranslations = getTranslations(languageCode)
 
     return {
-        language,
+        language: languageName,
+        languageCode,
+        supportedLanguages,
         t,
         changeLanguage,
+        translations: allTranslations,
     }
 }
 
 export default useTranslation
+export { useTranslation }

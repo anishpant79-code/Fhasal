@@ -1,5 +1,4 @@
-
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
     User,
     Mail,
@@ -9,178 +8,142 @@ import {
     Save,
     X,
     Sprout,
-    CheckCircle,
+    Shield,
+    Calendar,
+    CheckCircle2,
 } from 'lucide-react'
 
-const STORAGE_KEY = 'fhasal-profile'
-
-const defaultProfile = {
-    name: 'Farmer',
-    email: '',
-    phone: '',
-    location: '',
-    farmName: '',
-    bio: '',
-}
+import { useAuth } from '../../context/AuthContext'
+import { useToast } from '../../context/ToastContext'
+import { useSettings } from '../../context/SettingsContext'
+import { getTranslation } from '../../utils/translations'
+import API from '../../services/api'
 
 const Profile = () => {
-    const [profile, setProfile] = useState(defaultProfile)
-    const [formData, setFormData] = useState(defaultProfile)
+    const { user, updateUser, refreshProfile } = useAuth()
+    const { showToast } = useToast()
+    const { settings } = useSettings()
+
+    const languageCode = settings?.languageCode || 'en'
+    const t = (key) => getTranslation(languageCode, key)
+
     const [isEditing, setIsEditing] = useState(false)
-    const [message, setMessage] = useState('')
+    const [isSaving, setIsSaving] = useState(false)
+    const [error, setError] = useState('')
+
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        location: '',
+        district: '',
+        state: '',
+        bio: '',
+    })
 
     useEffect(() => {
-        try {
-            const savedProfile = localStorage.getItem(STORAGE_KEY)
-
-            if (savedProfile) {
-                const parsedProfile = JSON.parse(savedProfile)
-
-                const updatedProfile = {
-                    ...defaultProfile,
-                    ...parsedProfile,
-                }
-
-                setProfile(updatedProfile)
-                setFormData(updatedProfile)
-            }
-        } catch (error) {
-            console.error('Could not load profile:', error)
+        if (user) {
+            setFormData({
+                name: user.name || '',
+                email: user.email || '',
+                phone: user.phone || '',
+                location: user.location || '',
+                district: user.district || '',
+                state: user.state || '',
+                bio: user.bio || '',
+            })
         }
-    }, [])
+    }, [user])
 
-    const handleChange = (event) => {
-        const { name, value } = event.target
-
-        setFormData((previous) => ({
-            ...previous,
+    const handleChange = (e) => {
+        const { name, value } = e.target
+        setFormData((prev) => ({
+            ...prev,
             [name]: value,
         }))
-    }
-
-    const handleEdit = () => {
-        setFormData(profile)
-        setMessage('')
-        setIsEditing(true)
+        setError('')
     }
 
     const handleCancel = () => {
-        setFormData(profile)
+        if (user) {
+            setFormData({
+                name: user.name || '',
+                email: user.email || '',
+                phone: user.phone || '',
+                location: user.location || '',
+                district: user.district || '',
+                state: user.state || '',
+                bio: user.bio || '',
+            })
+        }
         setIsEditing(false)
-        setMessage('')
+        setError('')
     }
 
-    const handleSave = (event) => {
-        event.preventDefault()
+    const handleSave = async (e) => {
+        e.preventDefault()
 
         if (!formData.name.trim()) {
-            setMessage('Please enter your name.')
-            return
-        }
-
-        if (
-            formData.email &&
-            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
-        ) {
-            setMessage('Please enter a valid email address.')
+            setError('Please enter your full name.')
             return
         }
 
         try {
-            const updatedProfile = {
-                ...formData,
+            setIsSaving(true)
+            setError('')
+
+            const response = await API.put('/auth/profile', {
                 name: formData.name.trim(),
+                phone: formData.phone.trim(),
+                location: formData.location.trim(),
+                district: formData.district.trim(),
+                state: formData.state.trim(),
+                bio: formData.bio.trim(),
+            })
+
+            const updatedUser = response.data?.user
+            if (updatedUser) {
+                updateUser(updatedUser)
+            } else {
+                updateUser(formData)
             }
 
-            localStorage.setItem(
-                STORAGE_KEY,
-                JSON.stringify(updatedProfile)
-            )
-
-            setProfile(updatedProfile)
-            setFormData(updatedProfile)
+            showToast('Profile updated successfully!', 'success')
             setIsEditing(false)
-            setMessage('Profile updated successfully!')
-        } catch (error) {
-            console.error('Could not save profile:', error)
-            setMessage('Could not save your profile. Please try again.')
+            refreshProfile()
+        } catch (err) {
+            console.error('Failed to update profile:', err)
+            setError(
+                err.response?.data?.message ||
+                'Unable to update profile. Please try again.'
+            )
+        } finally {
+            setIsSaving(false)
         }
     }
 
-    const initials = profile.name
-        .trim()
-        .split(/\s+/)
-        .map((part) => part[0])
-        .join('')
-        .slice(0, 2)
-        .toUpperCase() || 'F'
-
-    const fields = [
-        {
-            label: 'Full Name',
-            name: 'name',
-            icon: User,
-            placeholder: 'Enter your full name',
-        },
-        {
-            label: 'Email Address',
-            name: 'email',
-            icon: Mail,
-            placeholder: 'Enter your email address',
-            type: 'email',
-        },
-        {
-            label: 'Phone Number',
-            name: 'phone',
-            icon: Phone,
-            placeholder: 'Enter your phone number',
-        },
-        {
-            label: 'Location',
-            name: 'location',
-            icon: MapPin,
-            placeholder: 'Enter your village, district or state',
-        },
-        {
-            label: 'Farm Name',
-            name: 'farmName',
-            icon: Sprout,
-            placeholder: 'Enter your farm name',
-        },
-    ]
-
     return (
-        <div className="min-h-screen bg-[#F7F9F6] px-4 py-6 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-5xl">
+        <div className="min-h-screen bg-fhasal-background p-4 md:p-8">
+            <div className="max-w-4xl mx-auto space-y-6">
 
-                {/* Header */}
-                <div className="mb-7">
-                    <h1 className="text-2xl font-bold text-[#174B35] sm:text-3xl">
-                        My Profile
-                    </h1>
-
-                    <p className="mt-2 text-sm text-gray-500">
-                        Manage your personal and farming information.
-                    </p>
-                </div>
-
-                {/* Profile Header Card */}
-                <div className="mb-6 overflow-hidden rounded-2xl border border-[#E5EAE1] bg-white shadow-sm">
-                    <div className="h-28 bg-gradient-to-r from-[#174B35] to-[#5C946F]" />
-
-                    <div className="flex flex-col gap-4 px-6 pb-6 sm:flex-row sm:items-end sm:justify-between">
-                        <div className="-mt-12 flex items-end gap-4">
-                            <div className="flex h-24 w-24 items-center justify-center rounded-2xl border-4 border-white bg-[#E7F0E8] text-3xl font-bold text-[#174B35] shadow-sm">
-                                {initials}
+                {/* Profile Header */}
+                <div className="bg-white rounded-2xl border border-[#E4E9DE] p-6 sm:p-8 shadow-sm">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#E8F4EA] flex items-center justify-center text-[#347052] font-bold text-2xl sm:text-3xl shrink-0 shadow-inner">
+                                {user?.name ? user.name.charAt(0).toUpperCase() : <User size={36} />}
                             </div>
 
-                            <div className="pb-1">
-                                <h2 className="text-xl font-bold text-gray-900">
-                                    {profile.name}
-                                </h2>
-
-                                <p className="text-sm text-gray-500">
-                                    Fhasal Farmer
+                            <div>
+                                <h1 className="text-2xl font-bold text-[#344334]">
+                                    {user?.name || 'Farmer'}
+                                </h1>
+                                <p className="text-sm text-[#7A8475] mt-1 flex items-center gap-2">
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#E8F4EA] text-[#347052]">
+                                        <Sprout size={13} />
+                                        Farmer Account
+                                    </span>
+                                    {user?.location && <span>• {user.location}</span>}
                                 </p>
                             </div>
                         </div>
@@ -188,8 +151,8 @@ const Profile = () => {
                         {!isEditing && (
                             <button
                                 type="button"
-                                onClick={handleEdit}
-                                className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#347052] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#285B41]"
+                                onClick={() => setIsEditing(true)}
+                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#347052] text-white text-sm font-medium hover:bg-[#285C42] transition shadow-sm"
                             >
                                 <Pencil size={16} />
                                 Edit Profile
@@ -198,121 +161,195 @@ const Profile = () => {
                     </div>
                 </div>
 
-                {/* Success / Error Message */}
-                {message && (
-                    <div className={`mb-5 flex items-center gap-2 rounded-lg border p-3 text-sm ${
-                        message.includes('successfully')
-                            ? 'border-green-200 bg-green-50 text-green-700'
-                            : 'border-amber-200 bg-amber-50 text-amber-700'
-                    }`}>
-                        {message.includes('successfully') && (
-                            <CheckCircle size={18} />
-                        )}
-                        {message}
+                {/* Error Banner */}
+                {error && (
+                    <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+                        {error}
                     </div>
                 )}
 
-                {/* Profile Information */}
-                <form onSubmit={handleSave}>
-                    <div className="rounded-2xl border border-[#E5EAE1] bg-white p-5 shadow-sm sm:p-7">
+                {/* Profile Details Form */}
+                <div className="bg-white rounded-2xl border border-[#E4E9DE] p-6 sm:p-8 shadow-sm">
+                    <form onSubmit={handleSave} className="space-y-6">
 
-                        <div className="mb-6 flex items-center justify-between border-b border-gray-100 pb-4">
+                        <div className="border-b border-[#E4E9DE] pb-4">
+                            <h2 className="text-lg font-semibold text-[#344334]">
+                                Personal & Farm Details
+                            </h2>
+                            <p className="text-xs text-[#7A8475] mt-1">
+                                Keep your contact and farm location information current.
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+                            {/* Full Name */}
                             <div>
-                                <h3 className="text-lg font-bold text-gray-900">
-                                    Personal Information
-                                </h3>
-
-                                <p className="mt-1 text-sm text-gray-500">
-                                    Your account and farming details.
-                                </p>
+                                <label className="block text-xs font-semibold text-[#526252] uppercase tracking-wider mb-2">
+                                    Full Name <span className="text-red-500">*</span>
+                                </label>
+                                <div className="relative">
+                                    <User size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        disabled={!isEditing || isSaving}
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        required
+                                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm outline-none transition disabled:bg-gray-50 disabled:text-gray-600 focus:border-[#347052] focus:ring-2 focus:ring-[#347052]/10"
+                                    />
+                                </div>
                             </div>
 
-                            <User className="text-[#347052]" size={22} />
+                            {/* Email (Read-Only) */}
+                            <div>
+                                <label className="block text-xs font-semibold text-[#526252] uppercase tracking-wider mb-2">
+                                    Email Address (Account Identifier)
+                                </label>
+                                <div className="relative">
+                                    <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        disabled
+                                        value={formData.email}
+                                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-500 text-sm cursor-not-allowed"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Phone */}
+                            <div>
+                                <label className="block text-xs font-semibold text-[#526252] uppercase tracking-wider mb-2">
+                                    Phone Number
+                                </label>
+                                <div className="relative">
+                                    <Phone size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                                    <input
+                                        type="tel"
+                                        name="phone"
+                                        disabled={!isEditing || isSaving}
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm outline-none transition disabled:bg-gray-50 disabled:text-gray-600 focus:border-[#347052] focus:ring-2 focus:ring-[#347052]/10"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Village / Town */}
+                            <div>
+                                <label className="block text-xs font-semibold text-[#526252] uppercase tracking-wider mb-2">
+                                    Village / Town
+                                </label>
+                                <div className="relative">
+                                    <MapPin size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                                    <input
+                                        type="text"
+                                        name="location"
+                                        placeholder="e.g. Shirwal"
+                                        disabled={!isEditing || isSaving}
+                                        value={formData.location}
+                                        onChange={handleChange}
+                                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm outline-none transition disabled:bg-gray-50 disabled:text-gray-600 focus:border-[#347052] focus:ring-2 focus:ring-[#347052]/10"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* District */}
+                            <div>
+                                <label className="block text-xs font-semibold text-[#526252] uppercase tracking-wider mb-2">
+                                    District
+                                </label>
+                                <input
+                                    type="text"
+                                    name="district"
+                                    placeholder="e.g. Satara"
+                                    disabled={!isEditing || isSaving}
+                                    value={formData.district}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm outline-none transition disabled:bg-gray-50 disabled:text-gray-600 focus:border-[#347052] focus:ring-2 focus:ring-[#347052]/10"
+                                />
+                            </div>
+
+                            {/* State */}
+                            <div>
+                                <label className="block text-xs font-semibold text-[#526252] uppercase tracking-wider mb-2">
+                                    State
+                                </label>
+                                <input
+                                    type="text"
+                                    name="state"
+                                    placeholder="e.g. Maharashtra"
+                                    disabled={!isEditing || isSaving}
+                                    value={formData.state}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm outline-none transition disabled:bg-gray-50 disabled:text-gray-600 focus:border-[#347052] focus:ring-2 focus:ring-[#347052]/10"
+                                />
+                            </div>
+
                         </div>
 
-                        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                            {fields.map((field) => {
-                                const Icon = field.icon
-
-                                return (
-                                    <div key={field.name}>
-                                        <label
-                                            htmlFor={field.name}
-                                            className="mb-2 block text-sm font-semibold text-gray-700"
-                                        >
-                                            {field.label}
-                                        </label>
-
-                                        <div className="relative">
-                                            <Icon
-                                                size={18}
-                                                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                                            />
-
-                                            <input
-                                                id={field.name}
-                                                name={field.name}
-                                                type={field.type || 'text'}
-                                                value={formData[field.name]}
-                                                onChange={handleChange}
-                                                disabled={!isEditing}
-                                                placeholder={field.placeholder}
-                                                className="w-full rounded-lg border border-gray-200 bg-gray-50 py-3 pl-10 pr-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#347052] focus:ring-2 focus:ring-green-100 disabled:cursor-default disabled:bg-gray-50"
-                                            />
-                                        </div>
-                                    </div>
-                                )
-                            })}
-                        </div>
-
-                        {/* Bio */}
-                        <div className="mt-5">
-                            <label
-                                htmlFor="bio"
-                                className="mb-2 block text-sm font-semibold text-gray-700"
-                            >
-                                About Your Farm
+                        {/* Bio / Farm Notes */}
+                        <div>
+                            <label className="block text-xs font-semibold text-[#526252] uppercase tracking-wider mb-2">
+                                About Your Farm / Bio
                             </label>
-
                             <textarea
-                                id="bio"
                                 name="bio"
-                                rows={4}
+                                rows={3}
+                                placeholder="Describe your primary crops, farming practices, or irrigation systems..."
+                                disabled={!isEditing || isSaving}
                                 value={formData.bio}
                                 onChange={handleChange}
-                                disabled={!isEditing}
-                                placeholder="Tell us a little about your farming activities..."
-                                className="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#347052] focus:ring-2 focus:ring-green-100 disabled:cursor-default disabled:bg-gray-50"
+                                className="w-full p-4 rounded-xl border border-gray-200 text-sm outline-none transition disabled:bg-gray-50 disabled:text-gray-600 focus:border-[#347052] focus:ring-2 focus:ring-[#347052]/10"
                             />
                         </div>
 
-                        {/* Action Buttons */}
+                        {/* Form Action Buttons */}
                         {isEditing && (
-                            <div className="mt-7 flex flex-wrap justify-end gap-3 border-t border-gray-100 pt-5">
+                            <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#E4E9DE]">
                                 <button
                                     type="button"
                                     onClick={handleCancel}
-                                    className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-600 transition hover:bg-gray-50"
+                                    disabled={isSaving}
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 transition"
                                 >
-                                    <X size={17} />
+                                    <X size={16} />
                                     Cancel
                                 </button>
 
                                 <button
                                     type="submit"
-                                    className="inline-flex items-center gap-2 rounded-lg bg-[#347052] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#285B41]"
+                                    disabled={isSaving}
+                                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#347052] text-white text-sm font-medium hover:bg-[#285C42] transition shadow-sm disabled:opacity-60"
                                 >
-                                    <Save size={17} />
-                                    Save Changes
+                                    <Save size={16} />
+                                    {isSaving ? 'Saving...' : 'Save Changes'}
                                 </button>
                             </div>
                         )}
-                    </div>
-                </form>
 
-                <p className="mt-5 text-center text-xs text-gray-400">
-                    Profile information is currently saved locally on this device.
-                </p>
+                    </form>
+                </div>
+
+                {/* Account Security Information Card */}
+                <div className="bg-white rounded-2xl border border-[#E4E9DE] p-6 shadow-sm flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
+                            <Shield size={20} />
+                        </div>
+                        <div>
+                            <h3 className="text-sm font-semibold text-[#344334]">
+                                Account Security & Password
+                            </h3>
+                            <p className="text-xs text-[#7A8475] mt-0.5">
+                                Your account is secured with encrypted JWT authentication.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     )

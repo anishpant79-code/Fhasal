@@ -1,5 +1,4 @@
-
-import React, {
+import {
     createContext,
     useContext,
     useState,
@@ -34,15 +33,15 @@ export const FieldProvider = ({ children }) => {
             const response = await API.get('/fields')
 
             setFields(response.data.fields || [])
-        } catch (error) {
-            console.error('Unable to load fields:', error)
+        } catch (err) {
+            console.error('Unable to load fields:', err)
 
-            if (error.response?.status === 401) {
+            if (err.response?.status === 401) {
                 setFields([])
             }
 
             setError(
-                error.response?.data?.message ||
+                err.response?.data?.message ||
                 'Unable to load your fields.'
             )
         } finally {
@@ -71,6 +70,34 @@ export const FieldProvider = ({ children }) => {
         }
     }, [fetchFields])
 
+    // Fetch single field by ID (checks cache first, then API)
+    const getFieldById = useCallback(async (fieldId) => {
+        if (!fieldId) return null
+
+        const existing = fields.find(
+            (f) => String(f.id || f._id) === String(fieldId)
+        )
+        if (existing) return existing
+
+        try {
+            const response = await API.get(`/fields/${fieldId}`)
+            const fetched = response.data?.field
+            if (fetched) {
+                setFields((prev) => {
+                    const exists = prev.some(
+                        (f) => String(f.id || f._id) === String(fieldId)
+                    )
+                    return exists ? prev : [fetched, ...prev]
+                })
+                return fetched
+            }
+        } catch (err) {
+            console.error('Unable to fetch single field:', err)
+            return null
+        }
+        return null
+    }, [fields])
+
     // Add field
     const addField = async (fieldData) => {
         try {
@@ -86,15 +113,15 @@ export const FieldProvider = ({ children }) => {
             ])
 
             return newField
-        } catch (error) {
-            console.error('Unable to add field:', error)
+        } catch (err) {
+            console.error('Unable to add field:', err)
 
             setError(
-                error.response?.data?.message ||
+                err.response?.data?.message ||
                 'Unable to register field.'
             )
 
-            throw error
+            throw err
         }
     }
 
@@ -119,15 +146,15 @@ export const FieldProvider = ({ children }) => {
             )
 
             return updatedField
-        } catch (error) {
-            console.error('Unable to update field:', error)
+        } catch (err) {
+            console.error('Unable to update field:', err)
 
             setError(
-                error.response?.data?.message ||
+                err.response?.data?.message ||
                 'Unable to update field.'
             )
 
-            throw error
+            throw err
         }
     }
 
@@ -144,15 +171,15 @@ export const FieldProvider = ({ children }) => {
                         String(field.id || field._id) !== String(fieldId)
                 )
             )
-        } catch (error) {
-            console.error('Unable to delete field:', error)
+        } catch (err) {
+            console.error('Unable to delete field:', err)
 
             setError(
-                error.response?.data?.message ||
+                err.response?.data?.message ||
                 'Unable to delete field.'
             )
 
-            throw error
+            throw err
         }
     }
 
@@ -163,6 +190,7 @@ export const FieldProvider = ({ children }) => {
                 loading,
                 error,
                 fetchFields,
+                getFieldById,
                 addField,
                 updateField,
                 deleteField,

@@ -1,9 +1,9 @@
-
-import React, {
+import {
     createContext,
     useContext,
     useEffect,
     useState,
+    useCallback,
 } from 'react'
 
 import API from '../services/api'
@@ -45,6 +45,45 @@ export const AuthProvider = ({ children }) => {
     // Notify other contexts when authentication changes
     const notifyAuthChange = () => {
         window.dispatchEvent(new Event('fhasal-auth-changed'))
+    }
+
+    // Refresh profile from MongoDB
+    const refreshProfile = useCallback(async () => {
+        const token = localStorage.getItem(TOKEN_KEY)
+        if (!token) return null
+
+        try {
+            const response = await API.get('/auth/me')
+            const freshUser = response.data?.user
+            if (freshUser) {
+                setUser((prev) => ({
+                    ...(prev || {}),
+                    ...freshUser,
+                }))
+                return freshUser
+            }
+        } catch (err) {
+            console.warn('Unable to refresh user profile from server:', err.message)
+        }
+        return null
+    }, [])
+
+    // Refresh user profile on mount if token exists
+    useEffect(() => {
+        const token = localStorage.getItem(TOKEN_KEY)
+        if (token) {
+            refreshProfile()
+        }
+    }, [refreshProfile])
+
+    // Update user state and storage
+    const updateUser = (updatedFields) => {
+        setUser((prev) => {
+            const next = { ...(prev || {}), ...updatedFields }
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+            return next
+        })
+        notifyAuthChange()
     }
 
     // LOGIN
@@ -94,6 +133,8 @@ export const AuthProvider = ({ children }) => {
         login,
         signup,
         logout,
+        updateUser,
+        refreshProfile,
     }
 
     return (

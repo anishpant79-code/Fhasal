@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 
 import {
@@ -14,6 +14,7 @@ import {
     Bell,
     Settings,
     ChevronRight,
+    Leaf,
 } from 'lucide-react'
 
 import { useSettings } from '../../context/SettingsContext'
@@ -151,6 +152,11 @@ const MobileNavbar = () => {
             name: t('nasaData'),
             path: '/nasa-data',
             icon: Satellite,
+        },
+        {
+            name: t('satellite') || 'Satellite Imagery',
+            path: '/satellite-imagery',
+            icon: Leaf,
         },
         {
             name: t('digitalTwin'),

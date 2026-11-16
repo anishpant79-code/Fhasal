@@ -30,15 +30,18 @@ import { useFields } from '../../context/FieldContext'
 // DATE HELPERS
 // --------------------------------------------------
 
-const getToday = () => {
-    const today = new Date()
+const getDefaultSatelliteDate = (daysAgo = 8) => {
+    const date = new Date()
+    date.setDate(date.getDate() - daysAgo)
 
-    const year = today.getFullYear()
-    const month = String(today.getMonth() + 1).padStart(2, '0')
-    const day = String(today.getDate()).padStart(2, '0')
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
 
     return `${year}-${month}-${day}`
 }
+
+const getToday = () => getDefaultSatelliteDate(0)
 
 // --------------------------------------------------
 // NASA GIBS SATELLITE LAYERS
@@ -153,7 +156,7 @@ const SatelliteImagery = () => {
         fields.length > 0 ? String(fields[0].id) : ''
     )
 
-    const [selectedDate, setSelectedDate] = useState(getToday())
+    const [selectedDate, setSelectedDate] = useState(getDefaultSatelliteDate(8))
     const [activeLayer, setActiveLayer] = useState('ndvi')
     const [searchTerm, setSearchTerm] = useState('')
     const [tileError, setTileError] = useState(false)
@@ -216,7 +219,7 @@ const SatelliteImagery = () => {
         : ''
 
     const handleReset = () => {
-        setSelectedDate(getToday())
+        setSelectedDate(getDefaultSatelliteDate(8))
         setActiveLayer('ndvi')
         setSearchTerm('')
         setTileError(false)
@@ -509,18 +512,14 @@ const SatelliteImagery = () => {
                                 scrollWheelZoom={true}
                                 className="h-full w-full"
                             >
-                                {/* Base map for transparent NDVI tiles */}
-
-                                {currentLayer.type === 'overlay' && (
-                                    <TileLayer
-                                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                        maxZoom={19}
-                                    />
-                                )}
+                                {/* Basemap for high-resolution zoomed farm context */}
+                                <TileLayer
+                                    attribution='Tiles &copy; Esri &mdash; Source: Esri, USGS, Maxar'
+                                    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                                    maxZoom={18}
+                                />
 
                                 {/* NASA satellite imagery */}
-
                                 <TileLayer
                                     key={imageryUrl}
                                     url={imageryUrl}
@@ -528,7 +527,7 @@ const SatelliteImagery = () => {
                                     minZoom={0}
                                     maxZoom={18}
                                     maxNativeZoom={9}
-                                    opacity={currentLayer.type === 'overlay' ? 0.85 : 1}
+                                    opacity={currentLayer.type === 'overlay' ? 0.8 : 0.9}
                                     eventHandlers={{
                                         tileerror: () => setTileError(true),
                                         load: () => setTileError(false),

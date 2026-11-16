@@ -21,6 +21,7 @@ const AREA_CONVERSIONS = {
     acre: 4046.8564224,
     hectare: 10000,
     guntha: 101.17141056,
+    bigha: 2500,
 }
 
 const SOIL_OPTIONS = [
@@ -54,7 +55,7 @@ const translations = {
         acres: 'Acres',
         hectares: 'Hectares',
         guntha: 'Guntha',
-        bigha: 'Bigha (Regional conversion pending)',
+        bigha: 'Bigha',
         location: 'Farm Location',
         locationPlaceholder: 'Village, town or district',
         soilType: 'Soil Type',
@@ -384,6 +385,8 @@ const AddField = () => {
         areaUnit: 'acre',
         fieldLocation: '',
         soilType: '',
+        currentCrop: '',
+        irrigationType: '',
         boundary: [],
     })
 
@@ -557,6 +560,8 @@ const AddField = () => {
                 fieldArea: Number(verifiedArea),
                 fieldLocation: formData.fieldLocation.trim(),
                 soilType: formData.soilType.trim(),
+                currentCrop: formData.currentCrop?.trim() || '',
+                irrigationType: formData.irrigationType || '',
             })
 
             showToast(t('success'), 'success')
@@ -705,7 +710,7 @@ const AddField = () => {
                                     <option value="acre">{t('acres')}</option>
                                     <option value="hectare">{t('hectares')}</option>
                                     <option value="guntha">{t('guntha')}</option>
-                                    <option value="bigha" disabled>{t('bigha')}</option>
+                                    <option value="bigha">{t('bigha')}</option>
                                 </select>
                             </div>
                         </div>
@@ -775,6 +780,49 @@ const AddField = () => {
                             <p className="text-xs text-[#829187] leading-relaxed">
                                 {t('soilHelp')}
                             </p>
+                        </div>
+
+                        {/* Current Crop & Irrigation (Optional) */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label
+                                    htmlFor="currentCrop"
+                                    className="block text-sm font-medium text-[#344334]"
+                                >
+                                    Current Crop (Optional)
+                                </label>
+                                <input
+                                    id="currentCrop"
+                                    name="currentCrop"
+                                    type="text"
+                                    value={formData.currentCrop}
+                                    onChange={handleChange}
+                                    placeholder="e.g. Wheat, Cotton, Sugarcane"
+                                    className="w-full px-4 py-3 rounded-xl border border-[#DCE5DA] text-sm text-[#344334] placeholder:text-[#A0AAA0] outline-none focus:border-[#347052] focus:ring-2 focus:ring-[#347052]/10 transition-all"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label
+                                    htmlFor="irrigationType"
+                                    className="block text-sm font-medium text-[#344334]"
+                                >
+                                    Irrigation Type (Optional)
+                                </label>
+                                <select
+                                    id="irrigationType"
+                                    name="irrigationType"
+                                    value={formData.irrigationType}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-3 rounded-xl border border-[#DCE5DA] bg-white text-sm text-[#344334] outline-none focus:border-[#347052] focus:ring-2 focus:ring-[#347052]/10"
+                                >
+                                    <option value="">Select irrigation (optional)</option>
+                                    <option value="Drip">Drip Irrigation</option>
+                                    <option value="Sprinkler">Sprinkler</option>
+                                    <option value="Canal / Flood">Canal / Flood</option>
+                                    <option value="Rainfed">Rainfed</option>
+                                </select>
+                            </div>
                         </div>
 
                         {/* Field Boundary */}

@@ -1,9 +1,9 @@
-
 const express = require('express')
 
 const {
     createField,
     getFields,
+    getFieldById,
     updateField,
     deleteField,
 } = require('../controllers/fieldController')
@@ -17,8 +17,9 @@ router.route('/')
     .get(protect, getFields)
     .post(protect, createField)
 
-// Update and delete a specific field
+// Get single field, update and delete a specific field
 router.route('/:id')
+    .get(protect, getFieldById)
     .put(protect, updateField)
     .delete(protect, deleteField)
 

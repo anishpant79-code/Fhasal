@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose')
 
 const fieldSchema = new mongoose.Schema(
@@ -25,8 +24,9 @@ const fieldSchema = new mongoose.Schema(
         areaUnit: {
             type: String,
             required: true,
-            enum: ['acre', 'hectare', 'guntha'],
+            enum: ['acre', 'hectare', 'guntha', 'bigha'],
             default: 'acre',
+            lowercase: true,
         },
 
         fieldLocation: {
@@ -36,6 +36,35 @@ const fieldSchema = new mongoose.Schema(
         },
 
         soilType: {
+            type: String,
+            default: '',
+            trim: true,
+        },
+
+        currentCrop: {
+            type: String,
+            default: '',
+            trim: true,
+        },
+
+        sowingDate: {
+            type: Date,
+            default: null,
+        },
+
+        cropStage: {
+            type: String,
+            enum: ['sowing', 'vegetative', 'flowering', 'maturity', 'harvested', 'fallow', ''],
+            default: '',
+        },
+
+        irrigationType: {
+            type: String,
+            enum: ['drip', 'sprinkler', 'flood', 'rainfed', 'canal', 'other', ''],
+            default: '',
+        },
+
+        notes: {
             type: String,
             default: '',
             trim: true,

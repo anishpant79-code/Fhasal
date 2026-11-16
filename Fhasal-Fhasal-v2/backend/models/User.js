@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 
@@ -35,6 +34,42 @@ const userSchema = new mongoose.Schema(
             type: String,
             enum: ['farmer', 'admin'],
             default: 'farmer',
+        },
+
+        location: {
+            type: String,
+            default: '',
+            trim: true,
+        },
+
+        district: {
+            type: String,
+            default: '',
+            trim: true,
+        },
+
+        state: {
+            type: String,
+            default: '',
+            trim: true,
+        },
+
+        bio: {
+            type: String,
+            default: '',
+            trim: true,
+        },
+
+        preferredLanguage: {
+            type: String,
+            default: 'en',
+            trim: true,
+        },
+
+        preferredUnit: {
+            type: String,
+            default: 'Acre',
+            trim: true,
         },
 
         // Password reset fields

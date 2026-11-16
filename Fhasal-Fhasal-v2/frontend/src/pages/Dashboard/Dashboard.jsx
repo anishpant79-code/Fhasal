@@ -284,6 +284,14 @@ const Dashboard = () => {
 
     const formattedArea = totalArea.toFixed(2)
 
+    // Calculate active crops from registered fields
+    const activeCropsList = fields.filter(
+        (f) => f.currentCrop && String(f.currentCrop).trim() !== ''
+    )
+    const uniqueCrops = [
+        ...new Set(activeCropsList.map((f) => String(f.currentCrop).trim())),
+    ]
+
     return (
         <div className="p-4 md:p-8">
 
@@ -317,7 +325,7 @@ const Dashboard = () => {
                     {t('overview')}
                 </h2>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
                     {/* Registered Fields */}
                     <div className="bg-white rounded-2xl border border-[#E4E9DE] p-5 shadow-sm">
@@ -368,7 +376,7 @@ const Dashboard = () => {
                     </div>
 
                     {/* Active Crops */}
-                    <div className="bg-white rounded-2xl border border-[#E4E9DE] p-5 shadow-sm">
+                    <div className="bg-white rounded-2xl border border-[#E4E9DE] p-5 shadow-sm sm:col-span-2 lg:col-span-1">
                         <div className="flex items-center gap-4">
                             <div className="w-14 h-14 rounded-xl bg-fhasal-green-light flex items-center justify-center shrink-0">
                                 <img
@@ -378,15 +386,22 @@ const Dashboard = () => {
                                 />
                             </div>
 
-                            <div>
+                            <div className="min-w-0">
                                 <p className="text-sm text-[#7A8475]">
                                     {t('activeCrops')}
                                 </p>
                                 <h3 className="text-2xl font-bold text-[#344334]">
-                                    0
+                                    {loading ? '—' : uniqueCrops.length}
                                 </h3>
-                                <p className="text-xs text-[#9AA397] mt-1">
-                                    {t('cropComingSoon')}
+                                <p className="text-xs text-[#7A8475] mt-1 truncate">
+                                    {uniqueCrops.length > 0
+                                        ? uniqueCrops.slice(0, 2).join(', ') +
+                                          (uniqueCrops.length > 2
+                                              ? ` +${uniqueCrops.length - 2}`
+                                              : '')
+                                        : fields.length > 0
+                                          ? 'No crops assigned to fields'
+                                          : t('cropComingSoon')}
                                 </p>
                             </div>
                         </div>
@@ -515,36 +530,69 @@ const Dashboard = () => {
 
             {/* Crop Recommendations */}
             <section className="mb-8">
-                <h2 className="text-xl font-semibold text-[#344334] mb-4">
-                    {t('recommendations')}
-                </h2>
-
-                <div className="bg-white rounded-2xl border border-[#E4E9DE] p-6 shadow-sm">
-                    <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-fhasal-wheat flex items-center justify-center shrink-0">
-                            <Lightbulb size={25} className="text-[#94712F]" />
-                        </div>
-
-                        <div>
-                            <h3 className="text-base font-semibold text-[#465746] mb-1">
-                                {t('recommendationTitle')}
-                            </h3>
-
-                            <p className="text-sm text-[#7A8475]">
-                                {t('recommendationDescription')}
-                            </p>
-                        </div>
-                    </div>
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-semibold text-[#344334]">
+                        {t('recommendations')}
+                    </h2>
+                    <Link
+                        to="/recommendations"
+                        className="text-sm text-fhasal-green font-medium hover:underline flex items-center gap-1"
+                    >
+                        {t('viewAll')}
+                        <ArrowRight size={15} />
+                    </Link>
                 </div>
+
+                <Link
+                    to="/recommendations"
+                    className="block bg-white rounded-2xl border border-[#E4E9DE] p-6 shadow-sm hover:shadow-md transition-shadow group"
+                >
+                    <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start gap-4">
+                            <div className="w-12 h-12 rounded-xl bg-fhasal-wheat flex items-center justify-center shrink-0">
+                                <Lightbulb size={25} className="text-[#94712F]" />
+                            </div>
+
+                            <div>
+                                <h3 className="text-base font-semibold text-[#465746] mb-1 group-hover:text-fhasal-green transition-colors">
+                                    {fields.length > 0 ? 'Smart Crop Recommendations Ready' : t('recommendationTitle')}
+                                </h3>
+
+                                <p className="text-sm text-[#7A8475]">
+                                    {fields.length > 0
+                                        ? 'View tailored agronomic suitability scores, seasonal timelines, and water requirements for your fields.'
+                                        : t('recommendationDescription')}
+                                </p>
+                            </div>
+                        </div>
+
+                        <ArrowRight
+                            size={18}
+                            className="text-[#829187] group-hover:text-fhasal-green group-hover:translate-x-1 transition-all shrink-0 mt-1"
+                        />
+                    </div>
+                </Link>
             </section>
 
             {/* Farm Conditions */}
             <section className="mb-8">
-                <h2 className="text-xl font-semibold text-[#344334] mb-4">
-                    {t('conditions')}
-                </h2>
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-semibold text-[#344334]">
+                        {t('conditions')}
+                    </h2>
+                    <Link
+                        to="/nasa-data"
+                        className="text-sm text-fhasal-green font-medium hover:underline flex items-center gap-1"
+                    >
+                        View NASA Insights
+                        <ArrowRight size={15} />
+                    </Link>
+                </div>
 
-                <div className="bg-white rounded-2xl border border-[#E4E9DE] p-5 shadow-sm">
+                <Link
+                    to="/nasa-data"
+                    className="block bg-white rounded-2xl border border-[#E4E9DE] p-5 shadow-sm hover:shadow-md transition-shadow group"
+                >
                     <div className="flex items-center gap-4">
 
                         <div className="shrink-0">
@@ -555,15 +603,19 @@ const Dashboard = () => {
                             />
                         </div>
 
-                        <div className="w-px h-20 bg-[#E4E9DE]"></div>
+                        <div className="w-px h-20 bg-[#E4E9DE] hidden sm:block"></div>
 
                         <div className="flex-1 min-w-0">
                             <p className="text-sm text-[#7A8475] mb-1">
                                 {t('environmental')}
                             </p>
 
-                            <h3 className="text-base font-semibold text-[#465746] mb-2">
-                                {t('weather')}
+                            <h3 className="text-base font-semibold text-[#465746] mb-2 group-hover:text-fhasal-green transition-colors flex items-center justify-between">
+                                <span>{t('weather')}</span>
+                                <ArrowRight
+                                    size={18}
+                                    className="text-[#829187] group-hover:text-fhasal-green group-hover:translate-x-1 transition-all shrink-0"
+                                />
                             </h3>
 
                             <p className="text-xs text-[#7A8475] leading-relaxed">
@@ -572,7 +624,7 @@ const Dashboard = () => {
                         </div>
 
                     </div>
-                </div>
+                </Link>
             </section>
 
         </div>

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import FieldDetailsMap from './FieldDetailsMap'
 
@@ -317,6 +317,7 @@ const FieldDetails = () => {
         fields = [],
         deleteField,
         loading,
+        getFieldById,
     } = useFields()
 
     const {
@@ -327,6 +328,8 @@ const FieldDetails = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
     const [deleteError, setDeleteError] = useState('')
+    const [fetchedField, setFetchedField] = useState(null)
+    const [fetchLoading, setFetchLoading] = useState(false)
 
     const languageCode = normalizeLanguageCode(
         settings,
@@ -340,7 +343,27 @@ const FieldDetails = () => {
 
     const field = fields.find(
         (item) => String(item.id || item._id) === String(id)
-    )
+    ) || fetchedField
+
+    // Fetch field directly if not in context cache
+    useEffect(() => {
+        let isCancelled = false
+        if (!field && id) {
+            setFetchLoading(true)
+            getFieldById(id)
+                .then((res) => {
+                    if (!isCancelled && res) {
+                        setFetchedField(res)
+                    }
+                })
+                .finally(() => {
+                    if (!isCancelled) setFetchLoading(false)
+                })
+        }
+        return () => {
+            isCancelled = true
+        }
+    }, [id, field, getFieldById])
 
     const areaUnit = field?.areaUnit || 'acre'
 
@@ -404,10 +427,13 @@ const FieldDetails = () => {
     }
 
     // LOADING STATE
-    if (loading && !field) {
+    if ((loading || fetchLoading) && !field) {
         return (
-            <div className="p-8 text-center text-[#718071]">
-                Loading field details...
+            <div className="p-8 flex items-center justify-center min-h-[400px]">
+                <div className="flex flex-col items-center gap-3">
+                    <div className="w-8 h-8 border-3 border-[#174B35] border-t-transparent rounded-full animate-spin" />
+                    <p className="text-sm font-medium text-[#718071]">Loading field details...</p>
+                </div>
             </div>
         )
     }

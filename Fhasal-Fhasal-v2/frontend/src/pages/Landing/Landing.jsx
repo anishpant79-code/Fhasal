@@ -21,6 +21,22 @@ import {
 
 import { useSettings } from '../../context/SettingsContext'
 import { getTranslation } from '../../utils/translations'
+import LanguageSelector from '../../components/common/LanguageSelector'
+
+const NavLinks = ({ links, onNavigate }) => (
+    <>
+        {links.map(([name, href]) => (
+            <a
+                key={href}
+                href={href}
+                onClick={onNavigate}
+                className="text-gray-600 hover:text-[#347052] font-medium transition"
+            >
+                {name}
+            </a>
+        ))}
+    </>
+)
 
 const photos = {
     hero: 'https://images.pexels.com/photos/31096711/pexels-photo-31096711/free-photo-of-rural-indian-farmer-in-lush-green-field-at-sunrise.jpeg?auto=compress&dpr=1&h=750&w=1260',
@@ -100,47 +116,12 @@ const Landing = () => {
         event.currentTarget.src = fallback
     }
 
-    const LanguageSelector = () => (
-        <div className="flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-2 bg-white">
-            <Languages size={18} className="text-[#347052] shrink-0" />
-
-            <select
-                value={languageCode}
-                onChange={handleLanguageChange}
-                aria-label={t('selectLanguage')}
-                className="bg-transparent text-sm font-semibold text-gray-700 outline-none cursor-pointer max-w-[115px]"
-            >
-                {supportedLanguages.map((language) => (
-                    <option
-                        key={language.code}
-                        value={language.code}
-                    >
-                        {language.nativeName}
-                    </option>
-                ))}
-            </select>
-        </div>
-    )
-
-    const NavigationLinks = () => (
-        <>
-            {[
-                [t('home'), '#home'],
-                [t('features'), '#features'],
-                [t('about'), '#about'],
-                [t('contact'), '#contact'],
-            ].map(([name, href]) => (
-                <a
-                    key={href}
-                    href={href}
-                    onClick={closeMenu}
-                    className="text-gray-600 hover:text-[#347052] font-medium transition"
-                >
-                    {name}
-                </a>
-            ))}
-        </>
-    )
+    const navLinks = [
+        [t('home'), '#home'],
+        [t('features'), '#features'],
+        [t('about'), '#about'],
+        [t('contact'), '#contact'],
+    ]
 
     return (
         <main className="min-h-screen bg-[#F7FAF7]">
@@ -164,7 +145,7 @@ const Landing = () => {
                     </Link>
 
                     <div className="hidden lg:flex items-center gap-7">
-                        <NavigationLinks />
+                        <NavLinks links={navLinks} onNavigate={closeMenu} />
                     </div>
 
                     <div className="hidden sm:flex items-center gap-3">
@@ -203,7 +184,7 @@ const Landing = () => {
                 {mobileMenuOpen && (
                     <div className="sm:hidden border-t bg-white px-5 py-5 space-y-4">
                         <div className="flex flex-col gap-4">
-                            <NavigationLinks />
+                            <NavLinks links={navLinks} onNavigate={closeMenu} />
                         </div>
 
                         <div className="grid grid-cols-2 gap-3 pt-3 border-t">

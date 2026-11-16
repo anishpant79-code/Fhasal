@@ -1,6 +1,9 @@
-
 const jwt = require('jsonwebtoken')
 const User = require('../models/User')
+
+const getJwtSecret = () => {
+    return process.env.JWT_SECRET || 'fhasal_default_development_jwt_secret_key_2026'
+}
 
 const protect = async (req, res, next) => {
     try {
@@ -20,7 +23,7 @@ const protect = async (req, res, next) => {
             })
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        const decoded = jwt.verify(token, getJwtSecret())
 
         const user = await User.findById(decoded.id).select('-password')
 

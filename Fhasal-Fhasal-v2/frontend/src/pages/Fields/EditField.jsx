@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
     ArrowLeft,
@@ -23,6 +23,7 @@ const AREA_CONVERSIONS = {
     acre: 4046.8564224,
     hectare: 10000,
     guntha: 101.17141056,
+    bigha: 2500,
 }
 
 const SOIL_OPTIONS = [
@@ -323,16 +324,19 @@ const EditField = () => {
     const { id } = useParams()
     const navigate = useNavigate()
 
-    const { fields, updateField } = useFields()
+    const { fields, updateField, loading, getFieldById } = useFields()
     const { showToast } = useToast()
     const { settings, supportedLanguages = [] } = useSettings()
 
     const languageCode = normalizeLanguageCode(settings, supportedLanguages)
     const t = translations[languageCode] || translations.en
 
+    const [fetchedField, setFetchedField] = useState(null)
+    const [fetchLoading, setFetchLoading] = useState(false)
+
     const field = fields.find(
         (item) => String(item.id || item._id) === String(id)
-    )
+    ) || fetchedField
 
     const [formData, setFormData] = useState(() => ({
         fieldName: field?.fieldName || field?.name || '',
@@ -340,8 +344,46 @@ const EditField = () => {
         areaUnit: String(field?.areaUnit || field?.unit || 'acre').toLowerCase(),
         fieldLocation: field?.fieldLocation || field?.location || '',
         soilType: field?.soilType || '',
+        currentCrop: field?.currentCrop || '',
+        irrigationType: field?.irrigationType || '',
         boundary: Array.isArray(field?.boundary) ? field.boundary : [],
     }))
+
+    // Fetch field if not in context cache
+    useEffect(() => {
+        let isCancelled = false
+        if (!field && id) {
+            setFetchLoading(true)
+            getFieldById(id)
+                .then((res) => {
+                    if (!isCancelled && res) {
+                        setFetchedField(res)
+                    }
+                })
+                .finally(() => {
+                    if (!isCancelled) setFetchLoading(false)
+                })
+        }
+        return () => {
+            isCancelled = true
+        }
+    }, [id, field, getFieldById])
+
+    // Synchronize form data when field loads
+    useEffect(() => {
+        if (field) {
+            setFormData({
+                fieldName: field.fieldName || field.name || '',
+                fieldArea: field.fieldArea ?? field.area ?? '',
+                areaUnit: String(field.areaUnit || field.unit || 'acre').toLowerCase(),
+                fieldLocation: field.fieldLocation || field.location || '',
+                soilType: field.soilType || '',
+                currentCrop: field.currentCrop || '',
+                irrigationType: field.irrigationType || '',
+                boundary: Array.isArray(field.boundary) ? field.boundary : [],
+            })
+        }
+    }, [field])
 
     const [error, setError] = useState('')
     const [isSaving, setIsSaving] = useState(false)
@@ -499,6 +541,8 @@ const EditField = () => {
                 fieldArea: Number(calculatedArea),
                 areaUnit: formData.areaUnit,
                 soilType: formData.soilType.trim(),
+                currentCrop: formData.currentCrop?.trim() || '',
+                irrigationType: formData.irrigationType || '',
                 boundary: formData.boundary,
             })
 
@@ -512,6 +556,17 @@ const EditField = () => {
             )
             setIsSaving(false)
         }
+    }
+
+    if (loading || fetchLoading) {
+        return (
+            <div className="p-4 md:p-8 flex items-center justify-center min-h-[400px]">
+                <div className="flex flex-col items-center gap-3">
+                    <div className="w-8 h-8 border-3 border-[#174B35] border-t-transparent rounded-full animate-spin" />
+                    <p className="text-sm font-medium text-[#718071]">Loading field details...</p>
+                </div>
+            </div>
+        )
     }
 
     if (!field) {
@@ -646,6 +701,7 @@ const EditField = () => {
                                 <option value="acre">{t.acres}</option>
                                 <option value="hectare">{t.hectares}</option>
                                 <option value="guntha">{t.gunthas}</option>
+                                <option value="bigha">Bigha</option>
                             </select>
                         </div>
 
@@ -671,6 +727,41 @@ const EditField = () => {
                             <p className="text-xs text-[#829187] mt-2">
                                 {t.soilHelp}
                             </p>
+                        </div>
+
+                        {/* Current Crop & Irrigation */}
+                        <div>
+                            <label htmlFor="currentCrop" className="block text-sm font-medium text-[#344334] mb-2">
+                                Current Crop
+                            </label>
+                            <input
+                                id="currentCrop"
+                                type="text"
+                                name="currentCrop"
+                                value={formData.currentCrop}
+                                onChange={handleChange}
+                                placeholder="e.g. Wheat, Rice, Sugarcane"
+                                className="w-full px-4 py-3 rounded-xl border border-[#DCE5DA] text-sm outline-none focus:border-[#347052]"
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="irrigationType" className="block text-sm font-medium text-[#344334] mb-2">
+                                Irrigation Type
+                            </label>
+                            <select
+                                id="irrigationType"
+                                name="irrigationType"
+                                value={formData.irrigationType}
+                                onChange={handleChange}
+                                className="w-full px-4 py-3 rounded-xl border border-[#DCE5DA] bg-white text-sm outline-none focus:border-[#347052]"
+                            >
+                                <option value="">Select irrigation</option>
+                                <option value="Drip">Drip Irrigation</option>
+                                <option value="Sprinkler">Sprinkler</option>
+                                <option value="Canal / Flood">Canal / Flood</option>
+                                <option value="Rainfed">Rainfed</option>
+                            </select>
                         </div>
                     </div>
                 </div>

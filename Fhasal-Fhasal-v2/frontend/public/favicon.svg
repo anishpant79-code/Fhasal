@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="green" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#65A30D"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+  </defs>
+
+  <!-- F lettermark -->
+  <path
+    d="M18 10 H83 C83 23 75 31 62 31 H39 V40 H68 C66 53 58 60 44 60 H39 V88 H18 Z"
+    fill="url(#green)"
+  />
+
+  <!-- Field-inspired curves -->
+  <path
+    d="M39 76 Q56 57 83 54"
+    fill="none"
+    stroke="#65A30D"
+    stroke-width="5"
+    stroke-linecap="round"
+  />
+  <path
+    d="M43 88 Q61 71 85 68"
+    fill="none"
+    stroke="#047857"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+</svg>

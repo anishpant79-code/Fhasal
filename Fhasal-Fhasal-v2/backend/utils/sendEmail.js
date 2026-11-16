@@ -1,23 +1,49 @@
-
 const nodemailer = require('nodemailer')
 
-const sendEmail = async (options) => {
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_APP_PASSWORD,
-        },
-    })
+const createTransporter = () => {
+    // If Gmail credentials provided with service mode or smtp
+    const user = process.env.EMAIL_USER
+    const pass = process.env.EMAIL_PASS || process.env.EMAIL_APP_PASSWORD
 
-    const mailOptions = {
-        from: `Fhasal <${process.env.EMAIL_USER}>`,
-        to: options.email,
-        subject: options.subject,
-        html: options.html,
+    if (!user || !pass) {
+        return null
     }
 
-    await transporter.sendMail(mailOptions)
+    if (process.env.EMAIL_HOST) {
+        return nodemailer.createTransport({
+            host: process.env.EMAIL_HOST,
+            port: Number(process.env.EMAIL_PORT) || 587,
+            secure: Number(process.env.EMAIL_PORT) === 465,
+            auth: { user, pass },
+        })
+    }
+
+    return nodemailer.createTransport({
+        service: 'gmail',
+        auth: { user, pass },
+    })
+}
+
+const sendEmail = async ({ to, subject, html, text }) => {
+    const user = process.env.EMAIL_USER
+    const transporter = createTransporter()
+
+    if (!transporter) {
+        console.warn(
+            '[Fhasal Email Service] EMAIL_USER and EMAIL_PASS are not configured in .env. Email simulated.'
+        )
+        return { simulated: true }
+    }
+
+    const mailOptions = {
+        from: `"Fhasal Support" <${user}>`,
+        to,
+        subject,
+        html: html || text,
+        text: text || '',
+    }
+
+    return transporter.sendMail(mailOptions)
 }
 
 module.exports = sendEmail
