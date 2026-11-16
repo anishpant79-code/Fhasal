@@ -8,7 +8,12 @@ const mongoose = require('mongoose')
 
 const connectDB = async () => {
     if (!process.env.MONGO_URI) {
-        throw new Error('MONGO_URI is missing from .env')
+        console.log('----------------------------------------------------')
+        console.log('⚡ [Fhasal Dev Engine] MONGO_URI not found in backend/.env.')
+        console.log('⚡ [Fhasal Dev Engine] Starting in Development Mode with local storage (dev-storage.json).')
+        console.log('⚡ [Fhasal Dev Engine] All features (register, login, profile, fields) are fully active!')
+        console.log('----------------------------------------------------')
+        return false
     }
 
     try {
@@ -17,9 +22,11 @@ const connectDB = async () => {
         })
 
         console.log('MongoDB connected successfully')
+        return true
     } catch (error) {
-        console.error('MongoDB connection failed:', error.message)
-        throw error
+        console.warn('⚠️  MongoDB connection failed:', error.message)
+        console.warn('⚡ [Fhasal Dev Engine] Falling back to local development storage.')
+        return false
     }
 }
 

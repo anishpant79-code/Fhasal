@@ -48,4 +48,48 @@ describe('Backend Core Security & Models', () => {
             assert.ok(allowedUnits.includes(normalized), `Unit ${unit} must be supported`)
         })
     })
+
+    test('DevStore UserModel create, find and password comparison', async () => {
+        const User = require('../models/User')
+        const email = `testfarmer_${Date.now()}@example.com`
+        const user = await User.create({
+            name: 'Ramesh Patel',
+            email,
+            phone: '9876543210',
+            password: 'StrongFarmerPassword1',
+        })
+
+        assert.ok(user._id)
+        assert.strictEqual(user.name, 'Ramesh Patel')
+        assert.strictEqual(user.email, email)
+
+        const found = await User.findOne({ email }).select('+password')
+        assert.ok(found)
+        const isMatch = await found.comparePassword('StrongFarmerPassword1')
+        assert.strictEqual(isMatch, true)
+
+        const wrongMatch = await found.comparePassword('WrongPass')
+        assert.strictEqual(wrongMatch, false)
+    })
+
+    test('DevStore FieldModel create, find and update cycle', async () => {
+        const Field = require('../models/Field')
+        const ownerId = 'test_owner_123'
+        const field = await Field.create({
+            owner: ownerId,
+            fieldName: 'North Paddy Plot',
+            fieldArea: 3.5,
+            areaUnit: 'acre',
+            fieldLocation: 'Nashik, Maharashtra',
+            currentCrop: 'Rice',
+            boundary: [[19.9975, 73.7898], [19.9985, 73.7908], [19.9965, 73.7918]],
+        })
+
+        assert.ok(field._id)
+        assert.strictEqual(field.fieldName, 'North Paddy Plot')
+
+        const list = await Field.find({ owner: ownerId }).sort({ createdAt: -1 })
+        assert.ok(list.length >= 1)
+        assert.strictEqual(list[0].fieldName, 'North Paddy Plot')
+    })
 })

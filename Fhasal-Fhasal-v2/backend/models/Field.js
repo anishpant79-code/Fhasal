@@ -102,4 +102,18 @@ const fieldSchema = new mongoose.Schema(
 
 const Field = mongoose.model('Field', fieldSchema)
 
-module.exports = Field
+const devStore = require('../utils/devStore')
+
+const FieldProxy = new Proxy(Field, {
+    get(target, prop, receiver) {
+        if (mongoose.connection && mongoose.connection.readyState === 1) {
+            return Reflect.get(target, prop, receiver)
+        }
+        if (devStore.FieldModel[prop]) {
+            return devStore.FieldModel[prop]
+        }
+        return Reflect.get(target, prop, receiver)
+    },
+})
+
+module.exports = FieldProxy

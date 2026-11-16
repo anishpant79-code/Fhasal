@@ -103,4 +103,18 @@ userSchema.methods.comparePassword = async function (enteredPassword) {
 
 const User = mongoose.model('User', userSchema)
 
-module.exports = User
+const devStore = require('../utils/devStore')
+
+const UserProxy = new Proxy(User, {
+    get(target, prop, receiver) {
+        if (mongoose.connection && mongoose.connection.readyState === 1) {
+            return Reflect.get(target, prop, receiver)
+        }
+        if (devStore.UserModel[prop]) {
+            return devStore.UserModel[prop]
+        }
+        return Reflect.get(target, prop, receiver)
+    },
+})
+
+module.exports = UserProxy
