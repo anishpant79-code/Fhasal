@@ -7,6 +7,7 @@ import {
     CircleUserRound,
     Languages,
     LogOut,
+    Menu,
 } from 'lucide-react'
 
 import FhasalMark from '../../assets/logos/fhasal-mark.svg'
@@ -74,7 +75,7 @@ const navbarTranslations = {
     },
 }
 
-const Navbar = () => {
+const Navbar = ({ onToggleSidebar, isSidebarCollapsed }) => {
     const navigate = useNavigate()
 
     const { unreadCount } = useNotifications()
@@ -106,21 +107,35 @@ const Navbar = () => {
     return (
         <nav className="w-full min-h-16 bg-white border-b border-[#E5EAE1] px-4 md:px-6 flex items-center justify-between gap-3">
 
-            {/* Brand Section */}
-            <Link
-                to="/dashboard"
-                className="flex items-center gap-2 shrink-0"
-            >
-                <img
-                    src={FhasalMark}
-                    alt="Fhasal logo"
-                    className="w-9 h-9 object-contain"
-                />
+            {/* Left Section: Sidebar Toggle & Brand */}
+            <div className="flex items-center gap-2 sm:gap-3">
+                {onToggleSidebar && (
+                    <button
+                        type="button"
+                        onClick={onToggleSidebar}
+                        title={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                        aria-label="Toggle navigation menu"
+                        className="p-2 rounded-xl text-[#347052] hover:bg-[#E8F0DF] transition-colors flex items-center justify-center cursor-pointer"
+                    >
+                        <Menu size={22} strokeWidth={2.2} />
+                    </button>
+                )}
 
-                <h1 className="text-xl font-bold text-[#174B35]">
-                    Fhasal
-                </h1>
-            </Link>
+                <Link
+                    to="/dashboard"
+                    className="flex items-center gap-2 shrink-0"
+                >
+                    <img
+                        src={FhasalMark}
+                        alt="Fhasal logo"
+                        className="w-8 h-8 object-contain"
+                    />
+
+                    <h1 className="text-xl font-bold text-[#174B35]">
+                        Fhasal
+                    </h1>
+                </Link>
+            </div>
 
             {/* Right Section */}
             <div className="flex items-center gap-2 sm:gap-4">

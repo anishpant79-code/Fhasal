@@ -1,7 +1,5 @@
-
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-
 import {
     House,
     Map,
@@ -13,6 +11,10 @@ import {
     Settings,
     Bell,
     Leaf,
+    ChevronLeft,
+    ChevronRight,
+    X,
+    Sprout,
 } from 'lucide-react'
 
 import { useSettings } from '../../context/SettingsContext'
@@ -30,6 +32,8 @@ const sidebarTranslations = {
         notifications: 'Notifications',
         settings: 'Settings',
         subtitle: 'Smart Farming Platform',
+        collapse: 'Collapse',
+        expand: 'Expand',
     },
     hi: {
         home: 'होम',
@@ -43,6 +47,8 @@ const sidebarTranslations = {
         notifications: 'सूचनाएँ',
         settings: 'सेटिंग्स',
         subtitle: 'स्मार्ट कृषि प्लेटफ़ॉर्म',
+        collapse: 'संक्षिप्त करें',
+        expand: 'विस्तार करें',
     },
     kn: {
         home: 'ಮುಖಪುಟ',
@@ -56,6 +62,8 @@ const sidebarTranslations = {
         notifications: 'ಅಧಿಸೂಚನೆಗಳು',
         settings: 'ಸೆಟ್ಟಿಂಗ್‌ಗಳು',
         subtitle: 'ಸ್ಮಾರ್ಟ್ ಕೃಷಿ ವೇದಿಕೆ',
+        collapse: 'ಕುಗ್ಗಿಸಿ',
+        expand: 'ವಿಸ್ತರಿಸಿ',
     },
     mr: {
         home: 'मुख्यपृष्ठ',
@@ -69,6 +77,8 @@ const sidebarTranslations = {
         notifications: 'सूचना',
         settings: 'सेटिंग्ज',
         subtitle: 'स्मार्ट शेती प्लॅटफॉर्म',
+        collapse: 'संक्षिप्त करा',
+        expand: 'विस्तृत करा',
     },
     te: {
         home: 'హోమ్',
@@ -82,6 +92,8 @@ const sidebarTranslations = {
         notifications: 'నోటిఫికేషన్‌లు',
         settings: 'సెట్టింగ్‌లు',
         subtitle: 'స్మార్ట్ వ్యవసాయ వేదిక',
+        collapse: 'కుదించు',
+        expand: 'విస్తరించు',
     },
     ta: {
         home: 'முகப்பு',
@@ -95,6 +107,8 @@ const sidebarTranslations = {
         notifications: 'அறிவிப்புகள்',
         settings: 'அமைப்புகள்',
         subtitle: 'ஸ்மார்ட் விவசாய தளம்',
+        collapse: 'சுருக்கு',
+        expand: 'விரிவாக்கு',
     },
     bn: {
         home: 'হোম',
@@ -108,14 +122,20 @@ const sidebarTranslations = {
         notifications: 'বিজ্ঞপ্তি',
         settings: 'সেটিংস',
         subtitle: 'স্মার্ট কৃষি প্ল্যাটফর্ম',
+        collapse: 'ছোট করুন',
+        expand: 'বড় করুন',
     },
 }
 
-const Sidebar = () => {
+const Sidebar = ({
+    isCollapsed = false,
+    onToggleCollapse,
+    isMobileOpen = false,
+    onCloseMobile,
+}) => {
     const { settings } = useSettings()
 
     const languageCode = settings.languageCode || 'en'
-
     const translations =
         sidebarTranslations[languageCode] || sidebarTranslations.en
 
@@ -174,23 +194,49 @@ const Sidebar = () => {
     ]
 
     return (
-        <aside className="flex h-screen w-64 flex-col bg-[#347052] text-white">
+        <aside
+            className={`flex h-screen sticky top-0 flex-col bg-[#347052] text-white transition-all duration-300 ease-in-out shadow-lg z-30 select-none ${
+                isCollapsed ? 'w-20' : 'w-64'
+            }`}
+        >
+            {/* Header / Brand */}
+            <div className={`shrink-0 border-b border-[#548269]/70 flex items-center justify-between transition-all ${
+                isCollapsed ? 'py-4 px-2 justify-center' : 'py-4 px-5'
+            }`}>
+                <div className={`flex items-center gap-3 overflow-hidden ${isCollapsed ? 'justify-center' : ''}`}>
+                    <div className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 transition flex items-center justify-center shrink-0">
+                        <Sprout size={24} className="text-green-300" />
+                    </div>
 
-            {/* Logo */}
-            <div className="shrink-0 border-b border-[#548269] px-6 py-6">
-                <h1 className="text-2xl font-bold tracking-wide">
-                    Fhasal
-                </h1>
+                    {!isCollapsed && (
+                        <div className="min-w-0">
+                            <h1 className="text-xl font-bold tracking-wide leading-tight truncate">
+                                Fhasal
+                            </h1>
+                            <p className="text-[11px] text-green-100/80 truncate">
+                                {translations.subtitle}
+                            </p>
+                        </div>
+                    )}
+                </div>
 
-                <p className="mt-1 text-xs text-green-100">
-                    {translations.subtitle}
-                </p>
+                {/* Close button for mobile drawer */}
+                {isMobileOpen && (
+                    <button
+                        type="button"
+                        onClick={onCloseMobile}
+                        aria-label="Close navigation"
+                        className="p-1.5 rounded-lg text-green-100 hover:text-white hover:bg-white/10 transition md:hidden cursor-pointer"
+                    >
+                        <X size={20} />
+                    </button>
+                )}
             </div>
 
-            {/* Navigation */}
+            {/* Navigation Links */}
             <nav
                 aria-label="Main navigation"
-                className="min-h-0 flex-1 space-y-2 overflow-y-auto px-4 py-6"
+                className="sidebar-scroll min-h-0 flex-1 space-y-1 overflow-y-auto px-2.5 py-3"
             >
                 {navLinks.map((link) => {
                     const Icon = link.icon
@@ -200,33 +246,77 @@ const Sidebar = () => {
                             key={link.path}
                             to={link.path}
                             end={link.end || false}
+                            onClick={() => {
+                                if (isMobileOpen && onCloseMobile) {
+                                    onCloseMobile()
+                                }
+                            }}
+                            title={isCollapsed ? link.name : undefined}
                             className={({ isActive }) =>
-                                `flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
+                                `group relative flex items-center rounded-xl transition-all duration-200 ${
+                                    isCollapsed
+                                        ? 'justify-center h-11 w-11 mx-auto my-1'
+                                        : 'gap-3 px-3.5 py-2.5 text-sm font-medium'
+                                } ${
                                     isActive
-                                        ? 'bg-[#426F58] text-white shadow-sm'
-                                        : 'text-green-50 hover:bg-[#3B7959]'
+                                        ? 'bg-[#25523B] text-white shadow-sm ring-1 ring-white/15 font-semibold'
+                                        : 'text-green-50/90 hover:bg-[#3B7959] hover:text-white'
                                 }`
                             }
                         >
                             <Icon
-                                size={19}
+                                size={20}
                                 strokeWidth={2}
                                 className="shrink-0"
                             />
 
-                            <span>{link.name}</span>
+                            {!isCollapsed ? (
+                                <span className="truncate">{link.name}</span>
+                            ) : (
+                                /* Tooltip popup for collapsed state */
+                                <span className="pointer-events-none absolute left-full ml-3 px-2.5 py-1.5 bg-[#1B3E2D] text-white text-xs font-semibold rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap border border-white/10">
+                                    {link.name}
+                                </span>
+                            )}
                         </NavLink>
                     )
                 })}
             </nav>
 
-            {/* Footer */}
-            <div className="shrink-0 border-t border-[#548269] px-6 py-4">
-                <p className="text-xs text-green-100">
-                    © 2026 Fhasal
-                </p>
-            </div>
+            {/* Footer & Collapse Toggle */}
+            <div className={`shrink-0 border-t border-[#548269]/70 transition-all ${
+                isCollapsed ? 'py-3 px-2 flex flex-col items-center gap-2' : 'py-3 px-4 flex items-center justify-between'
+            }`}>
+                {!isCollapsed && (
+                    <p className="text-[11px] text-green-200/70 truncate">
+                        © 2026 Fhasal
+                    </p>
+                )}
 
+                {/* Desktop Collapse Button */}
+                {onToggleCollapse && (
+                    <button
+                        type="button"
+                        onClick={onToggleCollapse}
+                        title={isCollapsed ? translations.expand : translations.collapse}
+                        aria-label={isCollapsed ? translations.expand : translations.collapse}
+                        className={`hidden md:flex items-center gap-2 rounded-xl text-green-100 hover:text-white hover:bg-white/10 transition cursor-pointer ${
+                            isCollapsed
+                                ? 'p-2.5 justify-center w-11 h-11'
+                                : 'px-3 py-1.5 text-xs font-medium'
+                        }`}
+                    >
+                        {isCollapsed ? (
+                            <ChevronRight size={18} />
+                        ) : (
+                            <>
+                                <ChevronLeft size={16} />
+                                <span>{translations.collapse}</span>
+                            </>
+                        )}
+                    </button>
+                )}
+            </div>
         </aside>
     )
 }
