@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useNotifications } from '../../context/NotificationContext'
+import BackButton from '../../components/common/BackButton'
 
 const Notifications = () => {
     const {
@@ -45,13 +46,9 @@ const Notifications = () => {
                 {/* Header */}
                 <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
                     <div>
-                        <Link
-                            to="/dashboard"
-                            className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-green-700"
-                        >
-                            <ArrowLeft size={16} />
-                            Back to Dashboard
-                        </Link>
+                        <div className="mb-3">
+                            <BackButton to="/dashboard" />
+                        </div>
 
                         <div className="flex items-center gap-3">
                             <div className="rounded-xl bg-green-100 p-3 text-green-700">

@@ -10,6 +10,7 @@ import {
 
 import { useFields } from '../../context/FieldContext'
 import { useSettings } from '../../context/SettingsContext'
+import BackButton from '../../components/common/BackButton'
 
 const AREA_CONVERSIONS = {
     acre: 4046.8564224,
@@ -281,6 +282,9 @@ const Fields = () => {
 
     return (
         <div className="p-4 md:p-8">
+            <div className="mb-4">
+                <BackButton />
+            </div>
 
             <div className="flex items-center justify-between mb-8">
                 <div>

@@ -1,6 +1,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import BackButton from '../../components/common/BackButton'
 
 import {
     Globe,
@@ -437,6 +438,9 @@ const DigitalTwin = () => {
 
     return (
         <div className="min-h-screen bg-fhasal-green-light p-4 md:p-8">
+            <div className="mb-4">
+                <BackButton />
+            </div>
 
             {/* Header */}
             <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">

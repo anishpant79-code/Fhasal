@@ -14,9 +14,9 @@ import {
     ChevronLeft,
     ChevronRight,
     X,
-    Sprout,
 } from 'lucide-react'
 
+import FhasalMark from '../../assets/logos/fhasal-mark.svg'
 import { useSettings } from '../../context/SettingsContext'
 
 const sidebarTranslations = {
@@ -204,8 +204,8 @@ const Sidebar = ({
                 isCollapsed ? 'py-4 px-2 justify-center' : 'py-4 px-5'
             }`}>
                 <div className={`flex items-center gap-3 overflow-hidden ${isCollapsed ? 'justify-center' : ''}`}>
-                    <div className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 transition flex items-center justify-center shrink-0">
-                        <Sprout size={24} className="text-green-300" />
+                    <div className="w-10 h-10 rounded-xl bg-white p-1.5 flex items-center justify-center shrink-0 shadow-sm">
+                        <img src={FhasalMark} alt="Fhasal logo" className="w-full h-full object-contain" />
                     </div>
 
                     {!isCollapsed && (
@@ -293,26 +293,19 @@ const Sidebar = ({
                     </p>
                 )}
 
-                {/* Desktop Collapse Button */}
+                {/* Desktop Collapse Toggle Button (Icon Only - No Text) */}
                 {onToggleCollapse && (
                     <button
                         type="button"
                         onClick={onToggleCollapse}
                         title={isCollapsed ? translations.expand : translations.collapse}
                         aria-label={isCollapsed ? translations.expand : translations.collapse}
-                        className={`hidden md:flex items-center gap-2 rounded-xl text-green-100 hover:text-white hover:bg-white/10 transition cursor-pointer ${
-                            isCollapsed
-                                ? 'p-2.5 justify-center w-11 h-11'
-                                : 'px-3 py-1.5 text-xs font-medium'
-                        }`}
+                        className="hidden md:flex items-center justify-center p-2 rounded-xl text-green-100 hover:text-white hover:bg-white/10 transition cursor-pointer"
                     >
                         {isCollapsed ? (
                             <ChevronRight size={18} />
                         ) : (
-                            <>
-                                <ChevronLeft size={16} />
-                                <span>{translations.collapse}</span>
-                            </>
+                            <ChevronLeft size={18} />
                         )}
                     </button>
                 )}

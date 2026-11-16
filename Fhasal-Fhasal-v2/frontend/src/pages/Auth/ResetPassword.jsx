@@ -16,6 +16,7 @@ import {
 
 import { useSettings } from '../../context/SettingsContext'
 import API from '../../services/api'
+import FhasalMark from '../../assets/logos/fhasal-mark.svg'
 
 const resetTranslations = {
     en: {
@@ -411,8 +412,8 @@ const ResetPassword = () => {
                 <div className="absolute -bottom-32 -left-24 w-96 h-96 rounded-full bg-white/5" />
 
                 <Link to="/" className="relative z-10 flex items-center gap-3 w-fit">
-                    <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center">
-                        <Sprout className="w-7 h-7 text-[#347052]" />
+                    <div className="w-12 h-12 bg-white rounded-2xl p-2 flex items-center justify-center shadow-md">
+                        <img src={FhasalMark} alt="Fhasal logo" className="w-full h-full object-contain" />
                     </div>
 
                     <div>
@@ -461,9 +462,7 @@ const ResetPassword = () => {
 
                     {/* Mobile branding */}
                     <Link to="/" className="lg:hidden flex items-center gap-3 mb-8">
-                        <div className="w-11 h-11 bg-[#347052] rounded-xl flex items-center justify-center">
-                            <Sprout className="w-6 h-6 text-white" />
-                        </div>
+                        <img src={FhasalMark} alt="Fhasal logo" className="w-9 h-9 object-contain" />
 
                         <div>
                             <h1 className="text-xl font-bold text-[#28563D]">Fhasal</h1>

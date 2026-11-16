@@ -22,6 +22,7 @@ import {
 import { useSettings } from '../../context/SettingsContext'
 import { getTranslation } from '../../utils/translations'
 import LanguageSelector from '../../components/common/LanguageSelector'
+import FhasalMark from '../../assets/logos/fhasal-mark.svg'
 
 const NavLinks = ({ links, onNavigate }) => (
     <>
@@ -140,9 +141,11 @@ const Landing = () => {
                         onClick={closeMenu}
                         className="flex items-center gap-2 shrink-0"
                     >
-                        <div className="bg-[#347052] p-2 rounded-xl">
-                            <Sprout size={25} className="text-white" />
-                        </div>
+                        <img
+                            src={FhasalMark}
+                            alt="Fhasal logo"
+                            className="w-9 h-9 object-contain"
+                        />
 
                         <span className="text-2xl font-bold text-[#347052]">
                             Fhasal
@@ -276,8 +279,8 @@ const Landing = () => {
                         </div>
 
                         <div className="absolute bottom-5 left-5 right-5 bg-white/95 backdrop-blur rounded-2xl p-4 shadow-lg flex items-center gap-4">
-                            <div className="bg-green-100 p-3 rounded-xl">
-                                <Sprout size={27} className="text-[#347052]" />
+                            <div className="bg-white p-2 rounded-xl shadow-xs border border-green-100 flex items-center justify-center shrink-0">
+                                <img src={FhasalMark} alt="Fhasal logo" className="w-8 h-8 object-contain" />
                             </div>
 
                             <div>

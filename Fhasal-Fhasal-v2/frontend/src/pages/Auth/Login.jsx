@@ -16,6 +16,7 @@ import {
 
 import { useSettings } from '../../context/SettingsContext'
 import { useAuth } from '../../context/AuthContext'
+import FhasalMark from '../../assets/logos/fhasal-mark.svg'
 
 const loginTranslations = {
     en: {
@@ -313,8 +314,8 @@ const Login = () => {
                 <div className="relative z-10 max-w-lg text-white">
 
                     <div className="flex items-center gap-3 mb-16">
-                        <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center">
-                            <Sprout size={30} className="text-[#347052]" />
+                        <div className="w-12 h-12 bg-white rounded-2xl p-2 flex items-center justify-center shadow-md">
+                            <img src={FhasalMark} alt="Fhasal logo" className="w-full h-full object-contain" />
                         </div>
 
                         <span className="text-3xl font-bold tracking-tight">
@@ -374,9 +375,7 @@ const Login = () => {
 
                     {/* Mobile Branding */}
                     <div className="flex lg:hidden items-center justify-center gap-2 mb-8">
-                        <div className="w-11 h-11 bg-[#347052] rounded-xl flex items-center justify-center">
-                            <Sprout size={27} className="text-white" />
-                        </div>
+                        <img src={FhasalMark} alt="Fhasal logo" className="w-10 h-10 object-contain" />
 
                         <span className="text-3xl font-bold text-[#347052]">
                             Fhasal

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { Mail, ArrowLeft, ExternalLink } from 'lucide-react'
 import { useSettings } from '../../context/SettingsContext'
 import API from '../../services/api'
+import FhasalMark from '../../assets/logos/fhasal-mark.svg'
 
 const ForgotPassword = () => {
     const { languageCode = 'en' } = useSettings()
@@ -82,6 +83,11 @@ const ForgotPassword = () => {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-10">
             <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
+
+                <div className="mb-6 flex flex-col items-center justify-center gap-2">
+                    <img src={FhasalMark} alt="Fhasal logo" className="w-10 h-10 object-contain" />
+                    <span className="text-xl font-bold text-[#174B35]">Fhasal</span>
+                </div>
 
                 <div className="mb-6 flex justify-center">
                     <div className="rounded-full bg-green-100 p-4">

@@ -1,5 +1,6 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
+import BackButton from '../../components/common/BackButton'
 import {
     Sprout,
     Droplets,
@@ -498,6 +499,9 @@ const Simulation = () => {
 
     return (
         <div className="min-h-screen bg-[#F7F9F5] p-4 sm:p-6 lg:p-8">
+            <div className="mb-4">
+                <BackButton />
+            </div>
 
             {/* Header */}
             <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">

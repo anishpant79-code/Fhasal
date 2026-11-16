@@ -16,6 +16,7 @@ import {
 
 import { useSettings } from '../../context/SettingsContext'
 import { useToast } from '../../context/ToastContext'
+import BackButton from '../../components/common/BackButton'
 
 const translations = {
     en: {
@@ -334,6 +335,10 @@ const Settings = () => {
 
     return (
         <div className="space-y-8 pb-10">
+            <div>
+                <BackButton />
+            </div>
+
             {/* Page Heading */}
             <div>
                 <div className="flex items-center gap-3">

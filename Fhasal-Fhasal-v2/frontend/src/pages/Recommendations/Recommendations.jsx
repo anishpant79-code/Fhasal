@@ -23,6 +23,7 @@ import { useFields } from '../../context/FieldContext'
 import { useSettings } from '../../context/SettingsContext'
 import { getTranslation } from '../../utils/translations'
 import { getCurrentGrowingSeason } from '../../utils/cropSuitability'
+import BackButton from '../../components/common/BackButton'
 import { evaluateFieldSuitability, REFERENCE_CROPS } from '../../services/recommendationService'
 import { getFieldCoordinates, fetchOpenMeteoWeather } from '../../utils/fieldWeather'
 
@@ -160,6 +161,9 @@ const Recommendations = () => {
     return (
         <div className="min-h-screen bg-fhasal-background p-4 md:p-8">
             <div className="max-w-6xl mx-auto space-y-6">
+                <div>
+                    <BackButton />
+                </div>
 
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

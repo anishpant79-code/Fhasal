@@ -18,6 +18,7 @@ import { useToast } from '../../context/ToastContext'
 import { useSettings } from '../../context/SettingsContext'
 import { getTranslation } from '../../utils/translations'
 import API from '../../services/api'
+import BackButton from '../../components/common/BackButton'
 
 const Profile = () => {
     const { user, updateUser, refreshProfile } = useAuth()
@@ -125,6 +126,9 @@ const Profile = () => {
     return (
         <div className="min-h-screen bg-fhasal-background p-4 md:p-8">
             <div className="max-w-4xl mx-auto space-y-6">
+                <div>
+                    <BackButton />
+                </div>
 
                 {/* Profile Header */}
                 <div className="bg-white rounded-2xl border border-[#E4E9DE] p-6 sm:p-8 shadow-sm">

@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 
 import { useFields } from '../../context/FieldContext'
+import BackButton from '../../components/common/BackButton'
 
 const rotationPlans = [
     {
@@ -70,6 +71,9 @@ const Rotation = () => {
 
     return (
         <div className="min-h-screen bg-fhasal-green-light p-4 md:p-8">
+            <div className="mb-4">
+                <BackButton />
+            </div>
 
             {/* Page Header */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">

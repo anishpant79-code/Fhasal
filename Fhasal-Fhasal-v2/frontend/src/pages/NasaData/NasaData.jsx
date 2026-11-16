@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react'
+import BackButton from '../../components/common/BackButton'
 import {
     Satellite,
     CloudSun,
@@ -232,6 +233,9 @@ const NasaData = () => {
 
     return (
         <div className="min-h-screen bg-fhasal-green-light p-4 md:p-8">
+            <div className="mb-4">
+                <BackButton />
+            </div>
 
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">

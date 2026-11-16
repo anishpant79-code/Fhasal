@@ -1,5 +1,6 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
+import BackButton from '../../components/common/BackButton'
 import {
     Satellite,
     MapPin,
@@ -250,6 +251,9 @@ const SatelliteImagery = () => {
 
     return (
         <div className="min-h-screen space-y-6 bg-gray-50 p-4 sm:p-6 lg:p-8">
+            <div>
+                <BackButton />
+            </div>
 
             {/* PAGE HEADER */}
 
