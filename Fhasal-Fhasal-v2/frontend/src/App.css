@@ -15,21 +15,14 @@
     }
 }
 
-/* Custom scrollbar for farm tables and drawers */
+/* Clean zero-scrollbar styling */
+* {
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+}
+
 ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f3ee;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #c7d2c3;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #174b35;
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
 }
