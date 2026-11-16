@@ -1,0 +1,47 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+
+  <defs>
+    <linearGradient id="fieldTop" x1="10" y1="20" x2="54" y2="48">
+      <stop stop-color="#B7E4A1"/>
+      <stop offset="1" stop-color="#65A85A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Isometric field base -->
+  <path d="M7 39L32 25L57 39L32 54L7 39Z"
+        fill="#D7EED0"/>
+
+  <path d="M7 39L32 54V58L7 43V39Z"
+        fill="#76B96A"/>
+
+  <path d="M32 54L57 39V43L32 58V54Z"
+        fill="#4C984D"/>
+
+  <!-- Field surface -->
+  <path d="M12 39L32 28L52 39L32 51L12 39Z"
+        fill="url(#fieldTop)"/>
+
+  <!-- Wheat-like crop -->
+  <path d="M22 39L22 27" stroke="#287A3D" stroke-width="2"/>
+  <path d="M22 31Q16 29 17 24Q23 25 22 31Z" fill="#3E9148"/>
+  <path d="M22 34Q28 29 28 25Q22 26 22 34Z" fill="#55A85B"/>
+  <path d="M22 27L20 21" stroke="#287A3D" stroke-width="1.5"/>
+  <path d="M20 23L17 20M22 23L25 19"
+        stroke="#76B96A" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Rice-like crop -->
+  <path d="M32 43L32 22" stroke="#287A3D" stroke-width="2"/>
+  <path d="M32 34Q24 30 25 25Q31 26 32 34Z" fill="#4B9D4F"/>
+  <path d="M32 37Q40 31 40 26Q34 28 32 37Z" fill="#6BB96A"/>
+  <path d="M32 25L32 17" stroke="#287A3D" stroke-width="1.5"/>
+  <path d="M32 20Q27 17 28 14Q33 15 32 20Z" fill="#8BCB73"/>
+  <path d="M32 20Q37 16 38 13Q33 14 32 20Z" fill="#65AD5C"/>
+
+  <!-- Maize-like crop -->
+  <path d="M42 39L42 27" stroke="#287A3D" stroke-width="2"/>
+  <path d="M42 33Q35 29 36 24Q42 25 42 33Z" fill="#4C9B4E"/>
+  <path d="M42 36Q49 29 49 25Q43 28 42 36Z" fill="#75B96B"/>
+  <path d="M42 29Q39 25 41 21Q46 24 42 29Z" fill="#8BCB73"/>
+
+</svg>
