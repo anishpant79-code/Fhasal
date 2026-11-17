@@ -12,11 +12,35 @@ const app = express()
 
 // Middleware
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps, curl, or same-origin)
+        if (!origin) return callback(null, true)
+        if (
+            origin.includes('localhost') ||
+            origin.endsWith('.vercel.app') ||
+            origin === process.env.CLIENT_URL
+        ) {
+            return callback(null, true)
+        }
+        return callback(null, true)
+    },
     credentials: true,
 }))
 
 app.use(express.json())
+
+// Ensure database connection for serverless function environments
+let dbPromise = null
+app.use(async (req, res, next) => {
+    if (!dbPromise) {
+        dbPromise = connectDB().catch((err) => {
+            console.error('Serverless DB connect error:', err)
+            dbPromise = null
+        })
+    }
+    await dbPromise
+    next()
+})
 
 // API Routes
 app.use('/api/auth', authRoutes)
@@ -75,4 +99,8 @@ const startServer = async () => {
     }
 }
 
-startServer()
+if (require.main === module && !process.env.VERCEL) {
+    startServer()
+}
+
+module.exports = app

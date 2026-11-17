@@ -3,10 +3,18 @@ const path = require('path')
 const bcrypt = require('bcryptjs')
 const mongoose = require('mongoose')
 
-const DB_FILE = path.join(__dirname, '..', 'dev-storage.json')
+const SEED_FILE = path.join(__dirname, '..', 'dev-storage.json')
+const DB_FILE = process.env.VERCEL
+    ? path.join('/tmp', 'dev-storage.json')
+    : SEED_FILE
 
 const loadStore = () => {
     try {
+        if (process.env.VERCEL && !fs.existsSync(DB_FILE) && fs.existsSync(SEED_FILE)) {
+            try {
+                fs.copyFileSync(SEED_FILE, DB_FILE)
+            } catch {}
+        }
         if (fs.existsSync(DB_FILE)) {
             const raw = fs.readFileSync(DB_FILE, 'utf8')
             return JSON.parse(raw)
