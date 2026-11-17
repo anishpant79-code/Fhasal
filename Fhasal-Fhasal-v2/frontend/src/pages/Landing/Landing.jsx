@@ -17,6 +17,7 @@ import {
     Phone,
     MessageCircle,
     Languages,
+    ExternalLink,
 } from 'lucide-react'
 
 import { useSettings } from '../../context/SettingsContext'
@@ -221,9 +222,22 @@ const Landing = () => {
                 <div className="grid lg:grid-cols-2 gap-12 items-center">
 
                     <div>
-                        <div className="inline-flex items-center gap-2 bg-green-100 text-[#347052] px-4 py-2 rounded-full text-sm font-semibold mb-7">
-                            <Leaf size={16} />
-                            {t('smartAgriculture')}
+                        <div className="flex flex-wrap items-center gap-3 mb-7">
+                            <div className="inline-flex items-center gap-2 bg-green-100 text-[#347052] px-4 py-2 rounded-full text-sm font-semibold">
+                                <Leaf size={16} />
+                                {t('smartAgriculture')}
+                            </div>
+
+                            <a
+                                href="https://www.linkedin.com/feed/update/urn:li:activity:7528450030106611713/"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-2 bg-[#0A66C2]/10 hover:bg-[#0A66C2]/15 border border-[#0A66C2]/20 text-[#0A66C2] px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium transition group"
+                            >
+                                <span className="flex h-2 w-2 rounded-full bg-[#0A66C2] animate-pulse" />
+                                <span>🚀 48-Hour Hackathon Build • Read Story</span>
+                                <ExternalLink size={13} className="group-hover:translate-x-0.5 transition-transform" />
+                            </a>
                         </div>
 
                         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
@@ -542,6 +556,16 @@ const Landing = () => {
 
                         <a href="#contact" className="hover:text-[#347052]">
                             {t('contact')}
+                        </a>
+
+                        <a
+                            href="https://www.linkedin.com/feed/update/urn:li:activity:7528450030106611713/"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1.5 text-[#0A66C2] hover:text-[#004182] font-semibold transition"
+                        >
+                            <span>Featured on LinkedIn</span>
+                            <ExternalLink size={13} />
                         </a>
 
                         <Link to="/login" className="hover:text-[#347052]">
