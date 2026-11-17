@@ -3,6 +3,10 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
+      "source": "/api/(.*)",
+      "destination": "https://fhasal-backend-anishpant79-code.vercel.app/api/$1"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
